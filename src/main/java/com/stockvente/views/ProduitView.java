@@ -15,6 +15,8 @@ public class ProduitView extends JFrame {
     private JTextField nomField;
     private JTextField idCatField;
     private JTextField idField;
+    private JTextField nomCatField;
+    private JTextField quantStockField;
     private JButton addButton;
     private JButton updateButton;
     private JButton deleteButton;
@@ -49,6 +51,16 @@ public class ProduitView extends JFrame {
         panel.add(new JLabel("ID Catégorie:"));
         idCatField = new JTextField();
         panel.add(idCatField);
+        
+        
+        panel.add(new JLabel("Nom categorie:"));
+        nomCatField = new JTextField();
+        panel.add(nomCatField);
+        
+        
+        panel.add(new JLabel("Quantite Stock"));
+        quantStockField = new JTextField();
+        panel.add(quantStockField);
 
         // Buttons
         addButton = new JButton("Ajouter");
@@ -69,11 +81,17 @@ public class ProduitView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String nom = nomField.getText();
                 int idCat = Integer.parseInt(idCatField.getText());
-                Produit produit = new Produit(0, nom, idCat); // ID will be auto-generated
+                String nomCat = nomCatField.getText();
+                int quantStock = Integer.parseInt(quantStockField.getText());
+            
+                Produit produit = new Produit(0, nom, idCat,nomCat,quantStock); // ID will be auto-generated
                 String result = produitController.ajouterProduit("Magasinier", produit);
                 JOptionPane.showMessageDialog(null, result);
                 nomField.setText("");
                 idCatField.setText("");
+                nomCatField.setText("");
+                quantStockField.setText("");
+                
             }
         });
 
@@ -83,12 +101,16 @@ public class ProduitView extends JFrame {
                 int id = Integer.parseInt(idField.getText());
                 String nom = nomField.getText();
                 int idCat = Integer.parseInt(idCatField.getText());
-                Produit produit = new Produit(id, nom, idCat);
+                String nomCat = nomCatField.getText();
+                int quantStock = Integer.parseInt(quantStockField.getText());
+                Produit produit = new Produit(id, nom, idCat,nomCat,quantStock);
                 String result = produitController.mettreAJourProduit("Magasinier", produit);
                 JOptionPane.showMessageDialog(null, result);
                 nomField.setText("");
                 idCatField.setText("");
                 idField.setText("");
+                nomCatField.setText("");
+                quantStockField.setText("");
             }
         });
 
@@ -113,16 +135,7 @@ public class ProduitView extends JFrame {
         setVisible(true);
     }
 
-    public static void main(String[] args) {
-        ProduitController controller = new ProduitController();
-        new ProduitView(controller);
-    }
+   
 
-//    ProduitView() {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//    }
-//
-//    ProduitView(AdminController adminController) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//    }
+
 }

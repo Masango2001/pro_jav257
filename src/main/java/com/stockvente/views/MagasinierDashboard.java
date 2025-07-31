@@ -1,11 +1,17 @@
 package com.stockvente.views;
 
+import com.stockvente.controller.MagasinierController;
 import com.stockvente.controller.ProduitController;
 import com.stockvente.controller.StockController;
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MagasinierDashboard extends JFrame {
+    private MagasinierController magasinierController;
+
 
     public MagasinierDashboard() {
         setTitle("Tableau de bord du Magasinier");
@@ -22,6 +28,9 @@ public class MagasinierDashboard extends JFrame {
         JButton btnStocks = new JButton("Gérer les Stocks");
         JButton btnCategories = new JButton("Gérer les Catégories");
         JButton btnFournisseurs = new JButton("Gérer les Fournisseurs");
+        JButton btnVoirStats = new JButton("Voir Tableau de Bord");
+        panelMain.add(btnVoirStats);
+
         JButton btnDeconnecter = new JButton("Se Déconnecter");
 
         panelMain.add(btnProduits);
@@ -51,6 +60,14 @@ public class MagasinierDashboard extends JFrame {
         btnCategories.addActionListener(e -> new CategorieView().setVisible(true));
 
         btnFournisseurs.addActionListener(e -> new FournisseurView().setVisible(true));
+        btnVoirStats.addActionListener(e -> {
+            try {
+                new StatistiquesMagasinierView().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(MagasinierDashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
 
         btnDeconnecter.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
@@ -66,8 +83,12 @@ public class MagasinierDashboard extends JFrame {
             }
         });
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MagasinierDashboard().setVisible(true));
+    // Ajouter ce constructeur dans MagasinierDashboard
+    public MagasinierDashboard(MagasinierController magasinierController) {
+        this();
+        this.magasinierController = magasinierController;
     }
+
+
+  
 }

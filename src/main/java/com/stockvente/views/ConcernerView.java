@@ -11,13 +11,28 @@ import java.util.List;
 
 public class ConcernerView extends JFrame {
     private final ConcernerController concernerController;
-    private final JTextArea outputArea;
-    private final JTextField venteField, produitField, quantiteField, prixField;
-    private final String role = "Admin"; // ou "Vendeur" selon le test
+    private JTextArea outputArea;
+    private JTextField venteField, produitField, quantiteField, prixField;
+    private final String role;
 
+    // Constructeur principal avec rôle
+    public ConcernerView(String role) {
+        this.role = (role != null && !role.isEmpty()) ? role : "Vendeur";
+        this.concernerController = new ConcernerController();
+        initUI();
+    }
+
+    // Constructeur par défaut
     public ConcernerView() {
-        concernerController = new ConcernerController();
+        this("Vendeur");
+    }
 
+    // ✅ Constructeur avec AdminController
+    public ConcernerView(AdminController adminController) {
+        this("Admin");
+    }
+
+    private void initUI() {
         setTitle("Gestion des Lignes de Vente");
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -47,6 +62,9 @@ public class ConcernerView extends JFrame {
         JButton afficherBtn = new JButton("Afficher");
         buttonPanel.add(ajouterBtn);
         buttonPanel.add(afficherBtn);
+        ajouterBtn.addActionListener(this::ajouterLigneDeVente);
+        afficherBtn.addActionListener(this::afficherToutesLesLignes);
+
 
         // Zone de sortie
         outputArea = new JTextArea(12, 60);
@@ -61,16 +79,6 @@ public class ConcernerView extends JFrame {
         add(scrollPane, BorderLayout.SOUTH);
 
         // Actions
-        ajouterBtn.addActionListener(this::ajouterLigneDeVente);
-        afficherBtn.addActionListener(this::afficherToutesLesLignes);
-    }
-
-    ConcernerView(String vendeur) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    ConcernerView(AdminController adminController) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     private void ajouterLigneDeVente(ActionEvent e) {
@@ -112,7 +120,5 @@ public class ConcernerView extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ConcernerView().setVisible(true));
-    }
+   
 }

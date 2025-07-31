@@ -11,15 +11,21 @@ import java.util.logging.Logger;
 
 public class AdminController {
     private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());
-    private final ProduitController produitController;
-    private final FournisseurController fournisseurController;
-    private final ApprovisionnementController approvisionnementController;
-    private final CategorieController categorieController;
-    private final ClientController clientController;
-    private final StockController stockController;
-    private final VenteController venteController;
-    private final UserManagementController userManagementController;
-    private final ConcernerController concernerController;
+    private  ProduitController produitController;
+    private  FournisseurController fournisseurController;
+    private  ApprovisionnementController approvisionnementController;
+    private  CategorieController categorieController;
+    private  ClientController clientController;
+    private  StockController stockController;
+    private  VenteController venteController;
+    private  UserManagementController userManagementController;
+    private  ConcernerController concernerController;
+    private  Utilisateur utilisateur;
+//    
+//    
+//    public Admin
+    
+    
     
     
      // ✅ Nouveau constructeur sans argument ajouté ici
@@ -41,6 +47,7 @@ public class AdminController {
     public UserManagementController getUserManagementController() {
         return userManagementController;
     }
+    
 
     public AdminController(ProduitController produitController,
                            FournisseurController fournisseurController,
@@ -60,6 +67,9 @@ public class AdminController {
         this.venteController = venteController;
         this.userManagementController = userManagementController;
         this.concernerController = concernerController;
+    }
+     public AdminController(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
     private String checkAdminAccess(String role) {

@@ -16,12 +16,12 @@ public class ClientController {
 
     public String afficherTousLesClients(String role) {
         if (!role.equals("Vendeur") && !role.equals("Admin")) {
-            return "Accès refusé : rôle non autorisé.";
+            return "Accè refusé : rôle non autorisé.";
         }
 
         List<Client> clients = clientDao.afficherTous();
         if (clients.isEmpty()) {
-            return "Aucun client trouvé dans la base de données.";
+            return "Aucun client trouvé .";
         }
 
         StringBuilder result = new StringBuilder("Liste des clients :\n");

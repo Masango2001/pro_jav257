@@ -107,8 +107,8 @@ public class FournisseurDao implements CrudDao<Fournisseur> {
         if (fournisseur.getTelephone_fournisseur() == null || fournisseur.getTelephone_fournisseur().trim().isEmpty()) {
             throw new IllegalArgumentException("Le téléphone du fournisseur ne peut pas être vide ou null.");
         }
-        if (!fournisseur.getTelephone_fournisseur().matches("\\d{10,15}")) {
-            throw new IllegalArgumentException("Le numéro de téléphone doit contenir entre 10 et 15 chiffres.");
+        if (!fournisseur.getTelephone_fournisseur().matches("\\d{8,}")) {
+            throw new IllegalArgumentException("Le numéro de téléphone doit contenir 8 chiffres.");
         }
         // Ajout de limites de longueur pour éviter les dépassements dans la base de données
         if (fournisseur.getNom_complet_fournisseur().length() > 100 ||

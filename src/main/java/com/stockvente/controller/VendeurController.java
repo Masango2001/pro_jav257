@@ -1,17 +1,20 @@
 package com.stockvente.controller;
 
 import com.stockvente.models.Client;
-
+import com.stockvente.models.Utilisateur;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class VendeurController {
 
-    private final VenteController venteController;
-    private final ClientController clientController;
-    private final StockController stockController;
-    private final ConcernerController concernerController;
-    private final SimpleDateFormat dateFormat;
+    private  VenteController venteController;
+    private  ClientController clientController;
+    private  StockController stockController;
+    private  ConcernerController concernerController;
+    private  SimpleDateFormat dateFormat;
+    private  Utilisateur utilisateur;
+    
+    
 
     public VendeurController() {
         this.venteController = new VenteController();
@@ -27,6 +30,9 @@ public class VendeurController {
         this.stockController = stockController;
         this.concernerController = concernerController;
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    }
+    public VendeurController(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
     public String afficherApercuVendeur(String role) {

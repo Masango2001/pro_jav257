@@ -10,11 +10,24 @@ import java.awt.*;
 
 public class FournisseurView extends JFrame {
 
-    private final FournisseurController controller;
-    private final JTable table;
-    private final DefaultTableModel tableModel;
+    private AdminController adminController;
+    private FournisseurController controller;
+    private JTable table;
+    private DefaultTableModel tableModel;
 
+    // Constructeur avec AdminController
+    public FournisseurView(AdminController adminController) {
+        this.adminController = adminController;
+        initUI();
+    }
+
+    // Constructeur vide
     public FournisseurView() {
+        initUI();
+    }
+
+      // Méthode qui initialise l'interface
+    private void initUI() {
         controller = new FournisseurController();
 
         setTitle("Gestion des Fournisseurs");
@@ -51,9 +64,7 @@ public class FournisseurView extends JFrame {
         chargerFournisseurs();
     }
 
-    FournisseurView(AdminController adminController) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
 
     private void ajouterFournisseur() {
         try {
@@ -137,7 +148,5 @@ public class FournisseurView extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FournisseurView().setVisible(true));
-    }
+    
 }

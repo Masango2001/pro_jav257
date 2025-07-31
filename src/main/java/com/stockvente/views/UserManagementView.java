@@ -226,12 +226,6 @@ public class UserManagementView extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            UtilisateurDao dao = new UtilisateurDao();
-            UserManagementController controller = new UserManagementController(dao);
-            new UserManagementView(controller, "Admin").setVisible(true);
-        });
-    }
+  
     
 }

@@ -159,9 +159,7 @@ public class ClientView extends JFrame {
         outputArea.setText(resultat);
     }
 
-     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ClientView("Vendeur").setVisible(true));
-    }
+   
 
 
 }

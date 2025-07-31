@@ -17,18 +17,18 @@
 
     <dependencies>
         <!-- JavaFX Controls -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>20.0.2</version>
         </dependency>
 
-        <!-- JavaFX FXML -->
+         JavaFX FXML 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>20.0.2</version>
-        </dependency>
+        </dependency>-->
 
         <!-- MySQL Connector -->
         <dependency>

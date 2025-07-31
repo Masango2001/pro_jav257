@@ -10,12 +10,27 @@ import java.awt.*;
 
 public class CategorieView extends JFrame {
 
-    private final CategorieController controller;
-    private final DefaultTableModel tableModel;
-    private final JTable table;
+    private  CategorieController controller;
+    private AdminController adminController;
+    private  DefaultTableModel tableModel;
+    private  JTable table;
 
+   
+    // ✅ Constructeur par défaut
     public CategorieView() {
+        initUI();
+    }
+
+    // ✅ Constructeur avec AdminController
+    public CategorieView(AdminController adminController) {
+        this.adminController = adminController;
+        initUI();
+    }
+
+    // ✅ Méthode d'initialisation de l'interface
+    private void initUI() {
         controller = new CategorieController();
+
         setTitle("Gestion des Catégories");
         setSize(600, 400);
         setLocationRelativeTo(null);
@@ -48,12 +63,8 @@ public class CategorieView extends JFrame {
         btnSupprimer.addActionListener(e -> supprimerCategorie());
         btnActualiser.addActionListener(e -> chargerCategories());
 
-        // Charger au lancement
+        // Chargement initial
         chargerCategories();
-    }
-
-    CategorieView(AdminController adminController) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     private void ajouterCategorie() {
@@ -122,7 +133,5 @@ public class CategorieView extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new CategorieView().setVisible(true));
-    }
+   
 }

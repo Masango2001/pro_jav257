@@ -146,8 +146,5 @@ public class StockView extends JFrame {
         dateField.setText("");
     }
 
-    public static void main(String[] args) {
-        StockController controller = new StockController();
-        new StockView(controller);
-    }
+  
 }

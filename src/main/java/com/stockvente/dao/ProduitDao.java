@@ -59,7 +59,12 @@ public class ProduitDao implements CrudDao<Produit> {
     @Override
     public List<Produit> afficherTous() {
         List<Produit> produits = new ArrayList<>();
-        String query = "SELECT * FROM produits";
+        String query = "SELECT p.id_produit, p.nom_produit, p.id_categorie, " +
+               "c.nom_categorie, s.quantite_stock " +
+               "FROM produits p " +
+               "JOIN categories c ON p.id_categorie = c.id_categorie " +
+               "JOIN stocks s ON p.id_produit = s.id_produit";
+
         try (Connection conn = DatabaseConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -67,7 +72,9 @@ public class ProduitDao implements CrudDao<Produit> {
                 Produit produit = new Produit(
                     rs.getInt("id_produit"),
                     rs.getString("nom_produit"),
-                    rs.getInt("id_categorie")
+                    rs.getInt("id_categorie"),
+                    rs.getString("nom_categorie"),
+                    rs.getInt("quantite_stock")
                 );
                 produits.add(produit);
             }

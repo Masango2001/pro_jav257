@@ -11,22 +11,47 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.text.*;
 
 public class VenteView extends JFrame {
     private final VenteController venteController;
-    private final JTextArea outputArea;
-    private final JTextField dateField, utilisateurField, clientField;
-    private final String role = "Vendeur"; // ou "Admin" selon le contexte
+    private JTextArea outputArea;
+    private JTextField dateField, utilisateurField, clientField;
+    private final String role;
 
+    // Constructeur avec rôle
+    public VenteView(String role) {
+        this.venteController = new VenteController();
+        this.role = (role != null && !role.isEmpty()) ? role : "Vendeur";
+        initUI();
+    }
+
+    // Constructeur par défaut
     public VenteView() {
-        venteController = new VenteController();
+        this("Vendeur");
+    }
 
-        setTitle("Gestion des Ventes");
-        setSize(700, 500);
+    // ✅ Constructeur utilisé depuis AdminView
+    public VenteView(AdminController adminController) {
+        this.venteController = new VenteController();
+        this.role = "Admin";
+        initUI();
+    }
+
+    private void initUI() {
+        setTitle("Gestion des Ventes - Rôle : " + role);
+        setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Zone de formulaire
+        JLabel welcomeLabel = new JLabel("Bienvenue dans la vue des ventes (" + role + ")");
+        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(welcomeLabel, BorderLayout.NORTH);
+
+        // === Formulaire de saisie
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+
         JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createTitledBorder("Ajouter une Vente"));
 
@@ -41,44 +66,80 @@ public class VenteView extends JFrame {
         formPanel.add(new JLabel("ID Client :"));
         formPanel.add(clientField);
 
-        // Boutons
+        centerPanel.add(formPanel, BorderLayout.CENTER);
+
+        // === Boutons d'action
         JPanel buttonPanel = new JPanel();
+
         JButton ajouterBtn = new JButton("Ajouter");
         JButton afficherBtn = new JButton("Afficher");
         buttonPanel.add(ajouterBtn);
         buttonPanel.add(afficherBtn);
 
-        // Zone d’affichage
-        outputArea = new JTextArea(12, 60);
+        if ("Admin".equalsIgnoreCase(role)) {
+            JButton modifierBtn = new JButton("Modifier");
+            JButton supprimerBtn = new JButton("Supprimer");
+            buttonPanel.add(modifierBtn);
+            buttonPanel.add(supprimerBtn);
+
+            modifierBtn.addActionListener(this::modifierVente);
+        
+        }
+
+        centerPanel.add(buttonPanel, BorderLayout.SOUTH);
+        add(centerPanel, BorderLayout.CENTER);
+
+        // === Zone d'affichage des ventes
+        outputArea = new JTextArea(12, 40);
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Liste des ventes"));
+        add(scrollPane, BorderLayout.EAST);
 
-        // Layout principal
-        setLayout(new BorderLayout(10, 10));
-        add(formPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
-
-        // Événements
+        // === Actions des boutons
         ajouterBtn.addActionListener(this::ajouterVente);
         afficherBtn.addActionListener(this::afficherVentes);
+
+        setVisible(true);
     }
 
-    VenteView(String vendeur) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    VenteView(AdminController adminController) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
     private void ajouterVente(ActionEvent e) {
         try {
-            Date dateVente = new SimpleDateFormat("dd/MM/yyyy").parse(dateField.getText());
-            int idUtilisateur = Integer.parseInt(utilisateurField.getText().trim());
-            int idClient = Integer.parseInt(clientField.getText().trim());
+            // Vérifier que les champs ne sont pas vides
+            String dateText = dateField.getText().trim();
+            String utilisateurText = utilisateurField.getText().trim();
+            String clientText = clientField.getText().trim();
 
+            if (dateText.isEmpty()) {
+                outputArea.setText("Erreur : le champ Date de vente est vide.");
+                return;
+            }
+            if (utilisateurText.isEmpty()) {
+                outputArea.setText("Erreur : le champ ID Utilisateur est vide.");
+                return;
+            }
+            if (clientText.isEmpty()) {
+                outputArea.setText("Erreur : le champ ID Client est vide.");
+                return;
+            }
+
+            // Valider que les ID sont des entiers
+            if (!utilisateurText.matches("\\d+")) {
+                outputArea.setText("Erreur : l'ID Utilisateur doit être un nombre entier.");
+                return;
+            }
+            if (!clientText.matches("\\d+")) {
+                outputArea.setText("Erreur : l'ID Client doit être un nombre entier.");
+                return;
+            }
+
+            // Convertir les valeurs
+            Date dateVente = new SimpleDateFormat("dd/MM/yyyy").parse(dateText);
+            int idUtilisateur = Integer.parseInt(utilisateurText);
+            int idClient = Integer.parseInt(clientText);
+
+            // Créer et ajouter la vente
             Vente vente = new Vente(0, dateVente, idUtilisateur, idClient);
             String result = venteController.ajouterVente(role, vente);
             outputArea.setText(result);
@@ -86,7 +147,7 @@ public class VenteView extends JFrame {
         } catch (ParseException pe) {
             outputArea.setText("Erreur : la date doit être au format dd/MM/yyyy.");
         } catch (NumberFormatException nfe) {
-            outputArea.setText("Erreur : les ID doivent être des entiers.");
+            outputArea.setText("Erreur : les ID doivent être des entiers valides.");
         } catch (Exception ex) {
             outputArea.setText("Erreur : " + ex.getMessage());
         }
@@ -104,10 +165,10 @@ public class VenteView extends JFrame {
             StringBuilder sb = new StringBuilder("=== Liste des ventes ===\n");
             for (Vente vente : ventes) {
                 sb.append("ID: ").append(vente.getId_vente())
-                  .append(", Date: ").append(sdf.format(vente.getDate_vente()))
-                  .append(", Utilisateur ID: ").append(vente.getId_utilisateur())
-                  .append(", Client ID: ").append(vente.getId_client())
-                  .append("\n");
+                        .append(", Date: ").append(sdf.format(vente.getDate_vente()))
+                        .append(", Utilisateur ID: ").append(vente.getId_utilisateur())
+                        .append(", Client ID: ").append(vente.getId_client())
+                        .append("\n");
             }
             outputArea.setText(sb.toString());
         } catch (Exception ex) {
@@ -115,7 +176,11 @@ public class VenteView extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new VenteView().setVisible(true));
+    private void modifierVente(ActionEvent e) {
+        outputArea.setText("Fonctionnalité de modification non implémentée.");
     }
+
+
+
+   
 }

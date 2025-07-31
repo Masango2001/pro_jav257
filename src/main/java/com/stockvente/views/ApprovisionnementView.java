@@ -10,7 +10,6 @@ import java.awt.*;
 import java.util.Date;
 
 public class ApprovisionnementView extends JFrame {
-
     private final ApprovisionnementController controller;
     private final JTable table;
     private final DefaultTableModel tableModel;
@@ -23,7 +22,7 @@ public class ApprovisionnementView extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         tableModel = new DefaultTableModel(new String[]{
-                "ID", "Produit", "Fournisseur", "Quantité", "Prix", "Total", "Date"
+                "ID", "Produit", "Fournisseur", "QuantitéApprovisionnement", "Prix", "Total", "Date"
         }, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -51,18 +50,20 @@ public class ApprovisionnementView extends JFrame {
         chargerApprovisionnements();
     }
 
-    ApprovisionnementView(AdminController adminController) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+// Ajout demandé sans modifier le reste
+    public ApprovisionnementView(AdminController adminController) {
+        this();
     }
+
 
     private void ajouterApprovisionnement() {
         try {
             int idProduit = Integer.parseInt(JOptionPane.showInputDialog(this, "ID Produit :"));
             int idFournisseur = Integer.parseInt(JOptionPane.showInputDialog(this, "ID Fournisseur :"));
-            int quantite = Integer.parseInt(JOptionPane.showInputDialog(this, "Quantité :"));
+            int quantiteApprovisionnement = Integer.parseInt(JOptionPane.showInputDialog(this, "Quantité Approvisionnement :"));
             double prix = Double.parseDouble(JOptionPane.showInputDialog(this, "Prix unitaire :"));
 
-            Approvisionnement a = new Approvisionnement(0, idProduit, idFournisseur, quantite, prix, new Date());
+            Approvisionnement a = new Approvisionnement(0, idProduit, idFournisseur, quantiteApprovisionnement, prix, new Date());
             String msg = controller.ajouterApprovisionnement("Admin", a);
             JOptionPane.showMessageDialog(this, msg);
             chargerApprovisionnements();
@@ -83,10 +84,10 @@ public class ApprovisionnementView extends JFrame {
             int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
             int idProduit = Integer.parseInt(JOptionPane.showInputDialog(this, "ID Produit :", tableModel.getValueAt(row, 1)));
             int idFournisseur = Integer.parseInt(JOptionPane.showInputDialog(this, "ID Fournisseur :", tableModel.getValueAt(row, 2)));
-            int quantite = Integer.parseInt(JOptionPane.showInputDialog(this, "Quantité :", tableModel.getValueAt(row, 3)));
+            int quantiteApprovisionnement = Integer.parseInt(JOptionPane.showInputDialog(this, "Quantité :", tableModel.getValueAt(row, 3)));
             double prix = Double.parseDouble(JOptionPane.showInputDialog(this, "Prix unitaire :", tableModel.getValueAt(row, 4)));
 
-            Approvisionnement a = new Approvisionnement(id, idProduit, idFournisseur, quantite, prix, new Date());
+            Approvisionnement a = new Approvisionnement(id, idProduit, idFournisseur, quantiteApprovisionnement, prix, new Date());
             String msg = controller.mettreAJourApprovisionnement("Admin", a);
             JOptionPane.showMessageDialog(this, msg);
             chargerApprovisionnements();
@@ -131,7 +132,5 @@ public class ApprovisionnementView extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ApprovisionnementView().setVisible(true));
-    }
+   
 }

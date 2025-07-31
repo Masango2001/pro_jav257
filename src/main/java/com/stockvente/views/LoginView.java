@@ -11,6 +11,8 @@ import java.awt.*;
 public class LoginView extends JFrame {
     private final LoginController loginController;
 
+    private Utilisateur utilisateur;
+
     public LoginView() {
         this.loginController = new LoginController();
         initializeUI();
@@ -28,7 +30,7 @@ public class LoginView extends JFrame {
         mainPanel.setBackground(new Color(240, 240, 240));
 
         JLabel titleLabel = new JLabel("StockVente - Connexion", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setFont(new Font("Bell Mt", Font.BOLD, 28));
         titleLabel.setForeground(new Color(33, 150, 243));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -39,7 +41,7 @@ public class LoginView extends JFrame {
                 "Connexion",
                 TitledBorder.DEFAULT_JUSTIFICATION,
                 TitledBorder.DEFAULT_POSITION,
-                new Font("Arial", Font.BOLD, 20),
+                new Font("Bell Mt", Font.BOLD, 20),
                 new Color(33, 150, 243)
         ));
 
@@ -48,46 +50,46 @@ public class LoginView extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel userLabel = new JLabel("Nom d'utilisateur :");
-        userLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        userLabel.setFont(new Font("Bell Mt", Font.PLAIN, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(userLabel, gbc);
 
         JTextField userField = new JTextField(20);
-        userField.setFont(new Font("Arial", Font.PLAIN, 18));
+        userField.setFont(new Font("Bell Mt", Font.PLAIN, 18));
         userField.setPreferredSize(new Dimension(300, 40));
         gbc.gridx = 1;
         gbc.gridy = 0;
         formPanel.add(userField, gbc);
 
         JLabel passwordLabel = new JLabel("Mot de passe :");
-        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        passwordLabel.setFont(new Font("Bell Mt", Font.PLAIN, 18));
         gbc.gridx = 0;
         gbc.gridy = 1;
         formPanel.add(passwordLabel, gbc);
 
         JPasswordField passwordField = new JPasswordField(20);
-        passwordField.setFont(new Font("Arial", Font.PLAIN, 18));
+        passwordField.setFont(new Font("Bell Mt", Font.PLAIN, 18));
         passwordField.setPreferredSize(new Dimension(300, 40));
         gbc.gridx = 1;
         gbc.gridy = 1;
         formPanel.add(passwordField, gbc);
 
         JLabel roleLabel = new JLabel("Rôle :");
-        roleLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        roleLabel.setFont(new Font("Bell Mt", Font.PLAIN, 18));
         gbc.gridx = 0;
         gbc.gridy = 2;
         formPanel.add(roleLabel, gbc);
 
         JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"Admin", "Vendeur", "Magasinier"});
-        roleComboBox.setFont(new Font("Arial", Font.PLAIN, 18));
+        roleComboBox.setFont(new Font("Bell Mt", Font.PLAIN, 18));
         roleComboBox.setPreferredSize(new Dimension(300, 40));
         gbc.gridx = 1;
         gbc.gridy = 2;
         formPanel.add(roleComboBox, gbc);
 
         JButton loginButton = new JButton("Se connecter");
-        loginButton.setFont(new Font("Arial", Font.BOLD, 16));
+        loginButton.setFont(new Font("Bell Mt", Font.BOLD, 16));
         loginButton.setBackground(new Color(33, 150, 243));
         loginButton.setForeground(Color.WHITE);
         loginButton.setPreferredSize(new Dimension(150, 40));
@@ -104,13 +106,14 @@ public class LoginView extends JFrame {
                         userField.getText(),
                         new String(passwordField.getPassword())
                 );
+                this.utilisateur = user;  // <-- IMPORTANT: stocker utilisateur pour la méthode afficherEtObtenirUtilisateur()
 
                 // Redirection vers le dashboard approprié
                 switch (user.getRole().toLowerCase()) {
                     case "admin":
-                        AdminController adminController = new AdminController(); // Crée le contrôleur
+                        AdminController adminController = new AdminController();
                         new AdminDashboard("Admin", adminController).setVisible(true);
-
+                        dispose();
                         break;
                     case "vendeur":
                         new VendeurDashboard().setVisible(true);
@@ -141,7 +144,23 @@ public class LoginView extends JFrame {
         setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(LoginView::new);
+   
+    public Utilisateur afficherEtObtenirUtilisateur() {
+        this.setVisible(true);
+
+        // Attente simple (bloquante) jusqu'à ce que l'utilisateur soit connecté.
+        while (utilisateur == null) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return utilisateur;
     }
+
+   
+
+    
 }

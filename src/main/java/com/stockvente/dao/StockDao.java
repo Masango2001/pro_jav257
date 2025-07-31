@@ -1,5 +1,6 @@
 package com.stockvente.dao;
 
+import com.stockvente.models.Produit;
 import com.stockvente.models.Stock;
 import com.stockvente.utils.DatabaseConnect;
 
@@ -86,4 +87,70 @@ public class StockDao implements CrudDao<Stock> {
             throw new IllegalArgumentException("La date de mise à jour ne peut pas être null.");
         }
     }
+    public void diminuerStock(int idProduit, int quantiteVendue) {
+        String sql = "UPDATE stocks SET quantite_stock = quantite_stock - ?, date_misejour = CURRENT_DATE WHERE id_produit = ?";
+        try (Connection conn = DatabaseConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, quantiteVendue);
+            stmt.setInt(2, idProduit);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Le produit avec l'ID " + idProduit + " n'existe pas dans le stock.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la diminution du stock : " + e.getMessage(), e);
+        }
+    }
+    // Récupère tous les produits (à utiliser dans la vue consultation)
+    public List<Produit> getAllProduitsAvecStock() {
+        List<Produit> produits = new ArrayList<>();
+            String query = "SELECT DISTINCT p.id_produit, p.nom_produit, c.nom_categorie, s.quantite_stock " +
+                           "FROM produits p " +
+                           "JOIN stocks s ON p.id_produit = s.id_produit " +
+                           "JOIN categories c ON p.id_categorie = c.id_categorie";
+
+            try (Connection conn = DatabaseConnect.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Produit produit = new Produit(); // ✅ instanciation nécessaire
+
+                    produit.setId_produit(rs.getInt("id_produit"));
+                    produit.setNom_produit(rs.getString("nom_produit"));
+                    produit.setNom_categorie(rs.getString("nom_categorie")); // depuis jointure avec `categorie`
+                    produit.setQuantite_stock(rs.getInt("quantite_stock"));  // depuis jointure avec `stocks`
+
+                    produits.add(produit);
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return produits;
+        }
+
+    public int getQuantiteStockParProduit(int idProduit) {
+        String query = "SELECT quantite_stock FROM stocks WHERE id_produit = ?";
+        try (Connection conn = DatabaseConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, idProduit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("quantite_stock");
+                } else {
+                    throw new RuntimeException("Produit non trouvé dans le stock.");
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la récupération de la quantité en stock : " + e.getMessage(), e);
+        }
+    }
+
+
 }

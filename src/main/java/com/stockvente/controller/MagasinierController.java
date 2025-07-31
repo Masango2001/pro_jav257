@@ -3,20 +3,22 @@ package com.stockvente.controller;
 import com.stockvente.models.Approvisionnement;
 import com.stockvente.models.Produit;
 import com.stockvente.models.Stock;
+import com.stockvente.models.Utilisateur;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MagasinierController {
-
-    private final ProduitController produitController;
-    private final ApprovisionnementController approvisionnementController;
-    private final StockController stockController;
-    private final CategorieController categorieController;
-    private final FournisseurController fournisseurController;
-    private final SimpleDateFormat dateFormat;
+    
+    private  ProduitController produitController;
+    private  ApprovisionnementController approvisionnementController;
+    private  StockController stockController;
+    private  CategorieController categorieController;
+    private  FournisseurController fournisseurController;
+    private  SimpleDateFormat dateFormat;
     private Produit produit;
     private Approvisionnement approvisionnement;
     private Stock stock;
+    private Utilisateur utilisateur;
 
     public MagasinierController() {
         this.produitController = new ProduitController();
@@ -27,6 +29,11 @@ public class MagasinierController {
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
 
+    
+    public MagasinierController(Utilisateur utilisateur){
+        this.utilisateur = utilisateur; 
+    }
+    
     public MagasinierController(ProduitController produitController, ApprovisionnementController approvisionnementController, StockController stockController, CategorieController categorieController, FournisseurController fournisseurController) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

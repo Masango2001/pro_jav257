@@ -116,8 +116,8 @@ public class ClientDao implements CrudDao<Client> {
             throw new IllegalArgumentException("Le numéro de téléphone du client ne peut pas être vide ou null.");
         }
         // Validation simple du format du numéro de téléphone (exemple : au moins 10 chiffres)
-        if (!client.getTelephone_client().matches("\\d{10,}")) {
-            throw new IllegalArgumentException("Le numéro de téléphone doit contenir au moins 10 chiffres.");
+        if (!client.getTelephone_client().matches("\\d{8,}")) {
+            throw new IllegalArgumentException("Le numéro de téléphone doit contenir au moins 8 chiffres.");
         }
     }
 

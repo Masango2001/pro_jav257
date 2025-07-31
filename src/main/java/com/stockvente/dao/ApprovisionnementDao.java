@@ -10,30 +10,98 @@ import java.util.List;
 
 public class ApprovisionnementDao implements CrudDao<Approvisionnement> {
 
-    @Override
+    
+
+      
+      @Override
+        
     public void save(Approvisionnement approvisionnement) {
-        validerChamps(approvisionnement);
-        validerClesEtrangeres(approvisionnement);
+          validerChamps(approvisionnement);
+          validerClesEtrangeres(approvisionnement);
 
-        String query = "INSERT INTO approvisionnements (id_produit, id_fournisseur, quantite_approvisionnement, prix_unitaire_achat, date_approvisionnement) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, approvisionnement.getId_produit());
-            stmt.setInt(2, approvisionnement.getId_fournisseur());
-            stmt.setInt(3, approvisionnement.getQuantite_approvisionnement());
-            stmt.setDouble(4, approvisionnement.getPrix_unitaire_achat());
-            stmt.setDate(5, new java.sql.Date(approvisionnement.getDate_approvisionnement().getTime()));
-            stmt.executeUpdate();
+          try (Connection conn = DatabaseConnect.getConnection()) {
 
-            // Récupérer l'ID généré (note : id_approvisionnement est final, donc non modifiable ici)
-            ResultSet generatedKeys = stmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                // Pas de mise à jour de l'objet, car id_approvisionnement est final
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de l'ajout de l'approvisionnement : " + e.getMessage(), e);
-        }
+              String checkQuery = "SELECT quantite_approvisionnement FROM approvisionnements WHERE id_produit = ? AND id_fournisseur = ?";
+              PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+              checkStmt.setInt(1, approvisionnement.getId_produit());
+              checkStmt.setInt(2, approvisionnement.getId_fournisseur());
+
+              ResultSet rs = checkStmt.executeQuery();
+
+              if (rs.next()) {
+                  // Approvisionnement existant : on met à jour la quantité ET la date (à la date actuelle ou fournie)
+                  int ancienneQuantite = rs.getInt("quantite_approvisionnement");
+                  int nouvelleQuantite = ancienneQuantite + approvisionnement.getQuantite_approvisionnement();
+
+                  String updateQuery = "UPDATE approvisionnements SET quantite_approvisionnement = ?, date_approvisionnement = ?, prix_unitaire_achat = ? WHERE id_produit = ? AND id_fournisseur = ?";
+                  PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+                  updateStmt.setInt(1, nouvelleQuantite);
+
+                  // Met à jour la date avec la date de l'objet approvisionnement (ou new java.sql.Date(System.currentTimeMillis()) si tu veux la date actuelle)
+                  updateStmt.setDate(2, new java.sql.Date(approvisionnement.getDate_approvisionnement().getTime()));
+
+                  updateStmt.setDouble(3, approvisionnement.getPrix_unitaire_achat());
+                  updateStmt.setInt(4, approvisionnement.getId_produit());
+                  updateStmt.setInt(5, approvisionnement.getId_fournisseur());
+
+                  updateStmt.executeUpdate();
+
+                  // Ici aussi tu peux mettre à jour le stock (quantite_stock) en ajoutant nouvelleQuantite
+                  mettreAJourStock(conn, approvisionnement.getId_produit(), nouvelleQuantite);
+
+              } else {
+                  // Nouvel approvisionnement → insert + stock
+                  String insertQuery = "INSERT INTO approvisionnements (id_produit, id_fournisseur, quantite_approvisionnement, prix_unitaire_achat, date_approvisionnement) VALUES (?, ?, ?, ?, ?)";
+                  PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
+                  insertStmt.setInt(1, approvisionnement.getId_produit());
+                  insertStmt.setInt(2, approvisionnement.getId_fournisseur());
+                  insertStmt.setInt(3, approvisionnement.getQuantite_approvisionnement());
+                  insertStmt.setDouble(4, approvisionnement.getPrix_unitaire_achat());
+                  insertStmt.setDate(5, new java.sql.Date(approvisionnement.getDate_approvisionnement().getTime()));
+
+                  insertStmt.executeUpdate();
+
+                  // Ajouter dans le stock (quantite_stock = quantite_approvisionnement)
+                  mettreAJourStock(conn, approvisionnement.getId_produit(), approvisionnement.getQuantite_approvisionnement());
+              }
+
+          } catch (SQLException e) {
+              throw new RuntimeException("Erreur lors de l'ajout/mise à jour de l'approvisionnement : " + e.getMessage(), e);
+          }
     }
+
+      // Méthode pour mettre à jour la quantité dans la table stock
+      private void mettreAJourStock(Connection conn, int idProduit, int quantite) throws SQLException {
+          // Vérifier si le produit existe dans stock
+          String checkStockQuery = "SELECT quantite_stock FROM stock WHERE id_produit = ?";
+          PreparedStatement checkStockStmt = conn.prepareStatement(checkStockQuery);
+          checkStockStmt.setInt(1, idProduit);
+          ResultSet rsStock = checkStockStmt.executeQuery();
+
+          if (rsStock.next()) {
+              // Produit existe → mise à jour quantite_stock
+              int quantiteStockExistante = rsStock.getInt("quantite_stock");
+              int nouvelleQuantiteStock = quantite; // On remplace par la nouvelle quantité (tu peux aussi additionner si tu préfères)
+
+              String updateStockQuery = "UPDATE stock SET quantite_stock = ? WHERE id_produit = ?";
+              PreparedStatement updateStockStmt = conn.prepareStatement(updateStockQuery);
+              updateStockStmt.setInt(1, nouvelleQuantiteStock);
+              updateStockStmt.setInt(2, idProduit);
+
+              updateStockStmt.executeUpdate();
+          } else {
+              // Produit absent → insertion dans stock
+              String insertStockQuery = "INSERT INTO stock (id_produit, quantite_stock) VALUES (?, ?)";
+              PreparedStatement insertStockStmt = conn.prepareStatement(insertStockQuery);
+              insertStockStmt.setInt(1, idProduit);
+              insertStockStmt.setInt(2, quantite);
+
+              insertStockStmt.executeUpdate();
+          }
+      }
+
+
+
 
     @Override
     public void update(Approvisionnement approvisionnement) {
