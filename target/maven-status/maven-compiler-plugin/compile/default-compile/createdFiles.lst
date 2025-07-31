@@ -1,6 +1,7 @@
 com\stockvente\models\Produit.class
 com\stockvente\controller\StockController.class
 com\stockvente\controller\AdminController.class
+com\stockvente\views\AdminDashboard$2.class
 com\stockvente\dao\UtilisateurDao.class
 com\stockvente\models\Categorie.class
 com\stockvente\utils\DatabaseConnect.class
@@ -13,12 +14,15 @@ com\stockvente\controller\ClientController.class
 com\stockvente\views\StockConsultationView.class
 com\stockvente\views\StockView$3.class
 com\stockvente\controller\LoginController.class
+com\stockvente\views\VendeurDashboard$4.class
 com\stockvente\views\ProduitView$2.class
 com\stockvente\controller\ProduitController.class
 com\stockvente\views\CategorieView.class
 com\stockvente\controller\ApprovisionnementController.class
+com\stockvente\views\MagasinierDashboard$2.class
 com\stockvente\views\VendeurDashboard$1.class
 com\stockvente\dao\ClientDao.class
+com\stockvente\views\AdminDashboard$1.class
 com\stockvente\views\StockView.class
 com\stockvente\controller\UserManagementController.class
 com\stockvente\service\UserService.class
@@ -28,6 +32,7 @@ com\stockvente\models\Fournisseur.class
 com\stockvente\controller\AbstractStringBuilder.class
 com\stockvente\views\StockView$2.class
 com\stockvente\views\ProduitView$3.class
+com\stockvente\views\VendeurDashboard$5.class
 com\stockvente\models\Vente.class
 com\stockvente\stockvente\StockVente.class
 com\stockvente\views\ProduitView$4.class
@@ -36,11 +41,13 @@ com\stockvente\views\LoginView.class
 com\stockvente\views\VendeurDashboard$2.class
 com\stockvente\controller\StatisticsController.class
 com\stockvente\controller\VendeurController.class
+com\stockvente\views\MagasinierDashboard$1.class
 com\stockvente\dao\FournisseurDao.class
 com\stockvente\dao\CrudDao.class
 com\stockvente\models\Stock.class
 com\stockvente\dao\StatisticsDao.class
 com\stockvente\views\ProduitView.class
+com\stockvente\views\AdminDashboard$3.class
 com\stockvente\dao\StockDao.class
 com\stockvente\views\MagasinierDashboard.class
 com\stockvente\models\Concerner.class
@@ -52,6 +59,7 @@ com\stockvente\views\ClientView.class
 com\stockvente\views\StockView$1.class
 com\stockvente\controller\FournisseurController.class
 com\stockvente\controller\MagasinierController.class
+com\stockvente\views\VendeurDashboard$3.class
 com\stockvente\views\UserManagementView.class
 com\stockvente\dao\VenteDao.class
 com\stockvente\views\ProduitView$1.class
