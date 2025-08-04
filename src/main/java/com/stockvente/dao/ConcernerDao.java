@@ -6,24 +6,34 @@ import com.stockvente.utils.DatabaseConnect;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ConcernerDao implements CrudDao<Concerner> {
 
     @Override
     public void save(Concerner concerner) {
-        validerChamps(concerner);
+        try {
+            // Cette méthode pourrait ouvrir une nouvelle connexion
+            // Modifiez-la pour accepter une connexion en paramètre
+            save(concerner, DatabaseConnect.getConnection());
+        } catch (SQLException ex) {
+            Logger.getLogger(ConcernerDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
+    public void save(Concerner concerner, Connection conn) throws SQLException {
         String query = "INSERT INTO concerner (id_vente, id_produit, quantite_vendue, prix_unitaire_vendue) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, concerner.getId_vente());
             stmt.setInt(2, concerner.getId_produit());
             stmt.setInt(3, concerner.getQuantite_vendue());
             stmt.setDouble(4, concerner.getPrix_unitaire_vendue());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de l'ajout de la relation Concerner : " + e.getMessage(), e);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Échec de l'insertion de la ligne de vente.");
+            }
         }
     }
 
@@ -91,4 +101,52 @@ public class ConcernerDao implements CrudDao<Concerner> {
             throw new IllegalArgumentException("Le prix unitaire vendu ne peut pas être négatif.");
         }
     }
+    public String getProduitLePlusVenduJour() {
+        String query = """
+            SELECT p.nom_produit, SUM(c.quantite_vendue) as total_vendu
+            FROM concerner c
+            JOIN produits p ON c.id_produit = p.id_produit
+            JOIN ventes v ON c.id_vente = v.id_vente
+            WHERE DATE(v.date_vente) = CURDATE()
+            GROUP BY p.nom_produit
+            ORDER BY total_vendu DESC
+            LIMIT 1
+        """;
+
+        try (Connection conn = DatabaseConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getString("nom_produit") + " (" + rs.getInt("total_vendu") + " unités)";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "Aucun produit vendu aujourd'hui";
+    }
+    public double getTotalVentesJour() {
+        String query = """
+            SELECT IFNULL(SUM(c.quantite_vendue * c.prix_unitaire_vendue), 0) as total
+            FROM concerner c
+            JOIN ventes v ON c.id_vente = v.id_vente
+            WHERE DATE(v.date_vente) = CURDATE()
+        """;
+
+        try (Connection conn = DatabaseConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getDouble("total");  // plus besoin de wasNull grâce au IFNULL en SQL
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+
+
 }

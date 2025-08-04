@@ -16,6 +16,9 @@ public class VenteController {
         this.venteDao = new VenteDao();
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
+    public int getNombreVentesDuJour() {
+        return venteDao.getNombreVentesJour();
+    }
 
     public String afficherToutesLesVentes(String role) {
         if (!role.equals("Vendeur") && !role.equals("Admin")) {

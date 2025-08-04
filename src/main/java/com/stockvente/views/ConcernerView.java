@@ -5,80 +5,157 @@ import com.stockvente.controller.ConcernerController;
 import com.stockvente.models.Concerner;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ConcernerView extends JFrame {
     private final ConcernerController concernerController;
-    private JTextArea outputArea;
-    private JTextField venteField, produitField, quantiteField, prixField;
+    private final JTable table;
+    private final DefaultTableModel tableModel;
+    private final JTextField venteField, produitField, quantiteField, prixField;
     private final String role;
 
-    // Constructeur principal avec rôle
     public ConcernerView(String role) {
         this.role = (role != null && !role.isEmpty()) ? role : "Vendeur";
         this.concernerController = new ConcernerController();
-        initUI();
+        setTitle("Gestion des Lignes de Vente");
+        setSize(900, 600);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout(15, 15));
+
+        JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(new Color(240, 240, 240));
+
+        JLabel title = new JLabel("Lignes de Vente", SwingConstants.CENTER);
+        title.setFont(new Font("Bell Mt", Font.BOLD, 26));
+        title.setForeground(new Color(33, 150, 243));
+        mainPanel.add(title, BorderLayout.NORTH);
+
+        // Formulaire
+        JPanel panelForm = new JPanel(new GridBagLayout());
+        panelForm.setBackground(Color.WHITE);
+        panelForm.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(33, 150, 243), 2),
+                "Formulaire Ligne de Vente",
+                TitledBorder.DEFAULT_JUSTIFICATION,
+                TitledBorder.DEFAULT_POSITION,
+                new Font("Bell Mt", Font.BOLD, 18),
+                new Color(33, 150, 243)
+        ));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 15, 10, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        Font font = new Font("Bell Mt", Font.PLAIN, 16);
+
+        JLabel lblVente = new JLabel("ID Vente :");
+        lblVente.setFont(font);
+        venteField = new JTextField();
+        venteField.setFont(font);
+
+        JLabel lblProduit = new JLabel("ID Produit :");
+        lblProduit.setFont(font);
+        produitField = new JTextField();
+        produitField.setFont(font);
+
+        JLabel lblQuantite = new JLabel("Quantité :");
+        lblQuantite.setFont(font);
+        quantiteField = new JTextField();
+        quantiteField.setFont(font);
+
+        JLabel lblPrix = new JLabel("Prix Unitaire :");
+        lblPrix.setFont(font);
+        prixField = new JTextField();
+        prixField.setFont(font);
+
+        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.3;
+        panelForm.add(lblVente, gbc);
+        gbc.gridx = 1; gbc.weightx = 0.7;
+        panelForm.add(venteField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0.3;
+        panelForm.add(lblProduit, gbc);
+        gbc.gridx = 1;
+        panelForm.add(produitField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        panelForm.add(lblQuantite, gbc);
+        gbc.gridx = 1;
+        panelForm.add(quantiteField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3;
+        panelForm.add(lblPrix, gbc);
+        gbc.gridx = 1;
+        panelForm.add(prixField, gbc);
+
+        JButton ajouterBtn = new JButton("Ajouter");
+        ajouterBtn.setFont(new Font("Bell Mt", Font.BOLD, 16));
+        ajouterBtn.setBackground(new Color(33, 150, 243));
+        ajouterBtn.setForeground(Color.WHITE);
+
+        gbc.gridx = 1; gbc.gridy = 4; gbc.anchor = GridBagConstraints.EAST;
+        panelForm.add(ajouterBtn, gbc);
+
+        // Table
+        tableModel = new DefaultTableModel(new String[] {"ID Vente", "ID Produit", "Quantité", "Prix Unitaire", "Total"}, 0);
+        table = new JTable(tableModel);
+        table.setFont(new Font("Bell Mt", Font.PLAIN, 14));
+        table.setRowHeight(25);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Lignes de vente"));
+
+        // Split
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelForm, scrollPane);
+        splitPane.setResizeWeight(0.3);
+        splitPane.setDividerLocation(300);
+
+        mainPanel.add(splitPane, BorderLayout.CENTER);
+
+        // Bas de page avec boutons
+        JButton afficherBtn = new JButton("Afficher");
+        afficherBtn.setFont(new Font("Bell Mt", Font.PLAIN, 15));
+        afficherBtn.setBackground(new Color(224, 224, 224));
+        afficherBtn.setPreferredSize(new Dimension(120, 35));
+
+        JButton retourBtn = new JButton("Retour");
+        retourBtn.setFont(new Font("Bell Mt", Font.PLAIN, 15));
+        retourBtn.setBackground(new Color(224, 224, 224));
+        retourBtn.setPreferredSize(new Dimension(120, 35));
+        retourBtn.addActionListener(e -> {
+            dispose();
+            try {
+                new StockConsultationView();
+            } catch (SQLException ex) {
+                Logger.getLogger(ConcernerView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        btnPanel.add(retourBtn);
+        btnPanel.add(afficherBtn);
+        mainPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+
+        ajouterBtn.addActionListener(this::ajouterLigneDeVente);
+        afficherBtn.addActionListener(this::afficherToutesLesLignes);
+        afficherToutesLesLignes(null);
     }
 
-    // Constructeur par défaut
     public ConcernerView() {
         this("Vendeur");
     }
 
-    // ✅ Constructeur avec AdminController
     public ConcernerView(AdminController adminController) {
         this("Admin");
-    }
-
-    private void initUI() {
-        setTitle("Gestion des Lignes de Vente");
-        setSize(700, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        // Entrées
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Informations Ligne de Vente"));
-
-        venteField = new JTextField();
-        produitField = new JTextField();
-        quantiteField = new JTextField();
-        prixField = new JTextField();
-
-        formPanel.add(new JLabel("ID Vente :"));
-        formPanel.add(venteField);
-        formPanel.add(new JLabel("ID Produit :"));
-        formPanel.add(produitField);
-        formPanel.add(new JLabel("Quantité vendue :"));
-        formPanel.add(quantiteField);
-        formPanel.add(new JLabel("Prix unitaire vendu :"));
-        formPanel.add(prixField);
-
-        // Boutons
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        JButton ajouterBtn = new JButton("Ajouter");
-        JButton afficherBtn = new JButton("Afficher");
-        buttonPanel.add(ajouterBtn);
-        buttonPanel.add(afficherBtn);
-        ajouterBtn.addActionListener(this::ajouterLigneDeVente);
-        afficherBtn.addActionListener(this::afficherToutesLesLignes);
-
-
-        // Zone de sortie
-        outputArea = new JTextArea(12, 60);
-        outputArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(outputArea);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Lignes de vente"));
-
-        // Layout principal
-        setLayout(new BorderLayout(10, 10));
-        add(formPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
-
-        // Actions
     }
 
     private void ajouterLigneDeVente(ActionEvent e) {
@@ -90,35 +167,24 @@ public class ConcernerView extends JFrame {
 
             Concerner ligne = new Concerner(idVente, idProduit, quantite, prix);
             String result = concernerController.ajouterLigneDeVente(role, ligne);
-            outputArea.setText(result);
+            JOptionPane.showMessageDialog(this, result);
             afficherToutesLesLignes(null);
         } catch (NumberFormatException ex) {
-            outputArea.setText("Erreur : veuillez saisir des valeurs valides pour ID, quantité et prix.");
+            JOptionPane.showMessageDialog(this, "Champs invalides.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void afficherToutesLesLignes(ActionEvent e) {
-        try {
-            List<Concerner> lignes = concernerController.getToutesLesLignesDeVente(role);
-            if (lignes.isEmpty()) {
-                outputArea.setText("Aucune ligne de vente trouvée.");
-                return;
-            }
-
-            StringBuilder sb = new StringBuilder("=== Lignes de vente ===\n");
-            for (Concerner c : lignes) {
-                sb.append("Vente ID: ").append(c.getId_vente())
-                  .append(", Produit ID: ").append(c.getId_produit())
-                  .append(", Quantité: ").append(c.getQuantite_vendue())
-                  .append(", Prix Unitaire: ").append(c.getPrix_unitaire_vendue())
-                  .append(", Total: ").append(c.getMontantTotalVente())
-                  .append("\n");
-            }
-            outputArea.setText(sb.toString());
-        } catch (Exception ex) {
-            outputArea.setText("Erreur lors de l'affichage : " + ex.getMessage());
+        tableModel.setRowCount(0);
+        List<Concerner> lignes = concernerController.getToutesLesLignesDeVente(role);
+        for (Concerner c : lignes) {
+            tableModel.addRow(new Object[]{
+                    c.getId_vente(),
+                    c.getId_produit(),
+                    c.getQuantite_vendue(),
+                    c.getPrix_unitaire_vendue(),
+                    c.getMontantTotalVente()
+            });
         }
     }
-
-   
 }

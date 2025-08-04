@@ -16,6 +16,10 @@ public class ApprovisionnementController {
         this.approvisionnementDao = new ApprovisionnementDao();
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
+    
+     public List<String> getHistoriqueApprovisionnements() {
+        return approvisionnementDao.getHistoriqueApprovisionnements();
+    }
 
     public String afficherTousLesApprovisionnements(String role) {
         if (!role.equals("Magasinier") && !role.equals("Admin")) {

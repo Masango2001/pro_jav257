@@ -12,6 +12,11 @@ public class FournisseurController {
 
     public FournisseurController() {
         this.fournisseurDao = new FournisseurDao();
+        
+    }
+    
+     public List<Fournisseur> getFournisseurs() {
+        return fournisseurDao.afficherTous();
     }
 
     public String afficherTousLesFournisseurs(String role) {

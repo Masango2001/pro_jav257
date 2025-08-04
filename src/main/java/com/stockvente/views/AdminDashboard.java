@@ -1,5 +1,5 @@
 package com.stockvente.views;
-
+import com.stockvente.views.LoginView;
 import com.stockvente.controller.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -546,7 +546,7 @@ public class AdminDashboard extends JFrame {
         if (result == JOptionPane.YES_OPTION) {
             dispose();
             // Rediriger vers la page de connexion (si LoginView existe)
-            // new LoginView().setVisible(true);
+            new LoginView().setVisible(true);
         }
     }
 

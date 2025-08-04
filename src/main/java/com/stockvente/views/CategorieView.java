@@ -5,75 +5,144 @@ import com.stockvente.controller.CategorieController;
 import com.stockvente.models.Categorie;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class CategorieView extends JFrame {
 
-    private  CategorieController controller;
+    private CategorieController controller;
     private AdminController adminController;
-    private  DefaultTableModel tableModel;
-    private  JTable table;
+    private DefaultTableModel tableModel;
+    private JTable table;
 
-   
-    // ✅ Constructeur par défaut
+    private JTextField tfNom;
+    private JButton btnAjouter, btnModifier, btnSupprimer, btnActualiser;
+
     public CategorieView() {
         initUI();
     }
 
-    // ✅ Constructeur avec AdminController
     public CategorieView(AdminController adminController) {
         this.adminController = adminController;
         initUI();
     }
 
-    // ✅ Méthode d'initialisation de l'interface
     private void initUI() {
         controller = new CategorieController();
 
         setTitle("Gestion des Catégories");
-        setSize(600, 400);
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setSize(1000, 600);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setLayout(new BorderLayout(15, 15));
 
-        // Table
+        Color blue = new Color(33, 150, 243);
+        Font labelFont = new Font("Bell Mt", Font.PLAIN, 18);
+        Font titleFont = new Font("Bell Mt", Font.BOLD, 22);
+        Font btnFont = new Font("Bell Mt", Font.BOLD, 16);
+
+        // ---- Formulaire (panel gauche) ----
+        JPanel panelForm = new JPanel(new GridBagLayout());
+        panelForm.setBackground(Color.WHITE);
+        panelForm.setPreferredSize(new Dimension(350, 600));
+        panelForm.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(blue, 2),
+                "Ajouter / Modifier Catégorie",
+                TitledBorder.DEFAULT_JUSTIFICATION,
+                TitledBorder.DEFAULT_POSITION,
+                titleFont,
+                blue
+        ));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel lblNom = new JLabel("Nom de la catégorie :");
+        lblNom.setFont(labelFont);
+        tfNom = new JTextField(20);
+        tfNom.setFont(labelFont);
+        tfNom.setPreferredSize(new Dimension(300, 40));
+
+        btnAjouter = new JButton("Ajouter");
+        btnModifier = new JButton("Modifier");
+        btnSupprimer = new JButton("Supprimer");
+        btnActualiser = new JButton("Actualiser");
+
+        JButton[] buttons = {btnAjouter, btnModifier, btnSupprimer, btnActualiser};
+        for (JButton btn : buttons) {
+            btn.setFont(btnFont);
+            btn.setBackground(blue);
+            btn.setForeground(Color.WHITE);
+            btn.setPreferredSize(new Dimension(150, 40));
+        }
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelForm.add(lblNom, gbc);
+        gbc.gridy++;
+        panelForm.add(tfNom, gbc);
+        gbc.gridy++;
+        panelForm.add(btnAjouter, gbc);
+        gbc.gridy++;
+        panelForm.add(btnModifier, gbc);
+        gbc.gridy++;
+        panelForm.add(btnSupprimer, gbc);
+        gbc.gridy++;
+        panelForm.add(btnActualiser, gbc);
+
+        // ---- Tableau (panel droit) ----
         tableModel = new DefaultTableModel(new String[]{"ID", "Nom"}, 0);
         table = new JTable(tableModel);
+        table.setFont(new Font("Bell Mt", Font.PLAIN, 16));
+        table.setRowHeight(28);
+        table.getTableHeader().setFont(new Font("Bell Mt", Font.BOLD, 16));
         JScrollPane scrollPane = new JScrollPane(table);
 
-        // Buttons
-        JPanel panelButtons = new JPanel(new FlowLayout());
-        JButton btnAjouter = new JButton("Ajouter");
-        JButton btnModifier = new JButton("Modifier");
-        JButton btnSupprimer = new JButton("Supprimer");
-        JButton btnActualiser = new JButton("Actualiser");
+        JPanel panelTable = new JPanel(new BorderLayout());
+        panelTable.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(blue, 2),
+                "Liste des Catégories",
+                TitledBorder.DEFAULT_JUSTIFICATION,
+                TitledBorder.DEFAULT_POSITION,
+                titleFont,
+                blue
+        ));
+        panelTable.setBackground(Color.WHITE);
+        panelTable.add(scrollPane, BorderLayout.CENTER);
 
-        panelButtons.add(btnAjouter);
-        panelButtons.add(btnModifier);
-        panelButtons.add(btnSupprimer);
-        panelButtons.add(btnActualiser);
+        // ---- SplitPane pour responsive gauche/droite ----
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelForm, panelTable);
+        splitPane.setResizeWeight(0.35);
+        splitPane.setDividerSize(5);
+        add(splitPane, BorderLayout.CENTER);
 
-        add(scrollPane, BorderLayout.CENTER);
-        add(panelButtons, BorderLayout.SOUTH);
-
-        // Actions
+        // ---- Actions ----
         btnAjouter.addActionListener(e -> ajouterCategorie());
         btnModifier.addActionListener(e -> modifierCategorie());
         btnSupprimer.addActionListener(e -> supprimerCategorie());
         btnActualiser.addActionListener(e -> chargerCategories());
 
-        // Chargement initial
+        // ---- Sélection ligne ----
+        table.getSelectionModel().addListSelectionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row >= 0) {
+                tfNom.setText(tableModel.getValueAt(row, 1).toString());
+            }
+        });
+
         chargerCategories();
     }
 
     private void ajouterCategorie() {
-        String nom = JOptionPane.showInputDialog(this, "Nom de la catégorie :");
-        if (nom != null && !nom.trim().isEmpty()) {
-            // Utilisation du constructeur complet avec ID = 0 (non utilisé pour insertions auto-incrémentées)
-            Categorie c = new Categorie(0, nom.trim());
+        String nom = tfNom.getText().trim();
+        if (!nom.isEmpty()) {
+            Categorie c = new Categorie(0, nom);
             String msg = controller.ajouterCategorie("Admin", c);
             JOptionPane.showMessageDialog(this, msg);
+            tfNom.setText("");
             chargerCategories();
         } else {
             JOptionPane.showMessageDialog(this, "Le nom ne peut pas être vide.");
@@ -88,13 +157,12 @@ public class CategorieView extends JFrame {
         }
 
         int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
-        String ancienNom = tableModel.getValueAt(row, 1).toString();
-
-        String nouveauNom = JOptionPane.showInputDialog(this, "Nouveau nom de la catégorie :", ancienNom);
-        if (nouveauNom != null && !nouveauNom.trim().isEmpty()) {
-            Categorie c = new Categorie(id, nouveauNom.trim());
+        String nouveauNom = tfNom.getText().trim();
+        if (!nouveauNom.isEmpty()) {
+            Categorie c = new Categorie(id, nouveauNom);
             String msg = controller.mettreAJourCategorie("Admin", c);
             JOptionPane.showMessageDialog(this, msg);
+            tfNom.setText("");
             chargerCategories();
         } else {
             JOptionPane.showMessageDialog(this, "Le nom ne peut pas être vide.");
@@ -113,12 +181,13 @@ public class CategorieView extends JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             String msg = controller.supprimerCategorie("Admin", id);
             JOptionPane.showMessageDialog(this, msg);
+            tfNom.setText("");
             chargerCategories();
         }
     }
 
     private void chargerCategories() {
-        tableModel.setRowCount(0); // Clear
+        tableModel.setRowCount(0);
         String resultat = controller.afficherToutesLesCategories("Admin");
         if (resultat.startsWith("Liste")) {
             String[] lignes = resultat.split("\n");
@@ -132,6 +201,4 @@ public class CategorieView extends JFrame {
             JOptionPane.showMessageDialog(this, resultat, "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-
-   
 }

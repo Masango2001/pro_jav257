@@ -1,54 +1,55 @@
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\VendeurDashboard.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\VenteController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\VenteView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Fournisseur.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\StockDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\AdminDashboard.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\StockConsultationView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\ConcernerDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\factory\ControllerFactory.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\FournisseurView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Utilisateur.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\stockvente\StockVente.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\StatisticsDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Client.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Approvisionnement.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\ClientDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\service\UserService.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\CategorieController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\FournisseurDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\VendeurController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Concerner.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\ConcernerView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Vente.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\LoginController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\UserManagementController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\ClientView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\CategorieView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\utils\DatabaseConnect.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\AbstractStringBuilder.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\CrudDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Categorie.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\AdminController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\UserManagementView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\VenteDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Stock.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\ApprovisionnementDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\ApprovisionnementController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\ProduitController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\LoginView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\StockController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\ProduitDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\ApprovisionnementView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\FournisseurController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\ConcernerController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\StatistiquesMagasinierView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\ProduitView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\CategorieDao.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\MagasinierDashboard.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\views\StockView.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\StatisticsController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\MagasinierController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\controller\ClientController.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\models\Produit.java
-E:\momo_java\StockVente\src\main\java\com\stockvente\dao\UtilisateurDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\StockDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\StatistiquesMagasinierView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Utilisateur.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\UtilisateurDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\ClientDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\CategorieController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\FournisseurDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\ProduitController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\ConcernerDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\StatisticsDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\LoginController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\UserManagementController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Approvisionnement.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\StockView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Concerner.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\ClientController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\MagasinierController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Produit.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\ConcernerController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Fournisseur.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\stockvente\StockVente.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\AbstractStringBuilder.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\VenteController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\StockConsultationView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\ApprovisionnementController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\VendeurController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\CrudDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\FournisseurView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\VendeurDashboard.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\AdminController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\ApprovisionnementView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Categorie.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\CategorieDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\ProduitDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\VenteDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\StatisticsController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Vente.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\CategorieView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\utils\DatabaseConnect.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\ClientView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\factory\ControllerFactory.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\HistoriqueApprovisionnementView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\UserManagementView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\StockController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\ConcernerView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\MagasinierDashboard.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\VenteView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Stock.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\controller\FournisseurController.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\ProduitView.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\AdminDashboard.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\models\Client.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\dao\ApprovisionnementDao.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\service\UserService.java
+E:\momo_java (ameliore)\momo_java\StockVente\src\main\java\com\stockvente\views\LoginView.java

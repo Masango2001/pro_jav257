@@ -1,5 +1,6 @@
 package com.stockvente.views;
 
+import com.stockvente.views.LoginView;
 import com.stockvente.controller.MagasinierController;
 import com.stockvente.controller.ProduitController;
 import com.stockvente.controller.StockController;
@@ -360,7 +361,7 @@ public class MagasinierDashboard extends JFrame {
         if (result == JOptionPane.YES_OPTION) {
             dispose();
             // Rediriger vers la page de connexion (si LoginView existe)
-            // new LoginView().setVisible(true);
+             new LoginView().setVisible(true);
         }
     }
 

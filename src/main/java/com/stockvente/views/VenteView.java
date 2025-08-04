@@ -5,182 +5,210 @@ import com.stockvente.controller.VenteController;
 import com.stockvente.models.Vente;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.swing.text.*;
 
 public class VenteView extends JFrame {
     private final VenteController venteController;
-    private JTextArea outputArea;
     private JTextField dateField, utilisateurField, clientField;
+    private JTable table;
+    private DefaultTableModel tableModel;
     private final String role;
 
-    // Constructeur avec rôle
     public VenteView(String role) {
         this.venteController = new VenteController();
         this.role = (role != null && !role.isEmpty()) ? role : "Vendeur";
         initUI();
     }
 
-    // Constructeur par défaut
     public VenteView() {
         this("Vendeur");
     }
 
-    // ✅ Constructeur utilisé depuis AdminView
     public VenteView(AdminController adminController) {
-        this.venteController = new VenteController();
-        this.role = "Admin";
-        initUI();
+        this("Admin");
     }
 
     private void initUI() {
         setTitle("Gestion des Ventes - Rôle : " + role);
-        setSize(800, 600);
+        setSize(900, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout(15, 15));
 
-        JLabel welcomeLabel = new JLabel("Bienvenue dans la vue des ventes (" + role + ")");
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        add(welcomeLabel, BorderLayout.NORTH);
+        JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(new Color(240, 240, 240));
 
-        // === Formulaire de saisie
-        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        JLabel title = new JLabel("Gestion des Ventes", SwingConstants.CENTER);
+        title.setFont(new Font("Bell Mt", Font.BOLD, 26));
+        title.setForeground(new Color(33, 150, 243));
+        mainPanel.add(title, BorderLayout.NORTH);
 
-        JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Ajouter une Vente"));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(33, 150, 243), 2),
+                "Formulaire Vente",
+                TitledBorder.DEFAULT_JUSTIFICATION,
+                TitledBorder.DEFAULT_POSITION,
+                new Font("Bell Mt", Font.BOLD, 18),
+                new Color(33, 150, 243)
+        ));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 15, 10, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        Font font = new Font("Bell Mt", Font.PLAIN, 16);
+
+        JLabel lblDate = new JLabel("Date (dd/MM/yyyy) :");
+        lblDate.setFont(font);
         dateField = new JTextField(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        dateField.setFont(font);
+
+        JLabel lblUtilisateur = new JLabel("ID Utilisateur :");
+        lblUtilisateur.setFont(font);
         utilisateurField = new JTextField();
+        utilisateurField.setFont(font);
+
+        JLabel lblClient = new JLabel("ID Client :");
+        lblClient.setFont(font);
         clientField = new JTextField();
+        clientField.setFont(font);
 
-        formPanel.add(new JLabel("Date de vente (dd/MM/yyyy) :"));
-        formPanel.add(dateField);
-        formPanel.add(new JLabel("ID Utilisateur :"));
-        formPanel.add(utilisateurField);
-        formPanel.add(new JLabel("ID Client :"));
-        formPanel.add(clientField);
+        JButton btnAjouter = new JButton("Ajouter");
+        JButton btnAfficher = new JButton("Afficher");
+        JButton btnModifier = new JButton("Modifier");
 
-        centerPanel.add(formPanel, BorderLayout.CENTER);
+        btnAjouter.setFont(font);
+        btnAfficher.setFont(font);
+        btnModifier.setFont(font);
+        btnAjouter.setBackground(new Color(33, 150, 243));
+        btnAjouter.setForeground(Color.WHITE);
 
-        // === Boutons d'action
-        JPanel buttonPanel = new JPanel();
+        gbc.gridx = 0; gbc.gridy = 0;
+        formPanel.add(lblDate, gbc);
+        gbc.gridx = 1;
+        formPanel.add(dateField, gbc);
 
-        JButton ajouterBtn = new JButton("Ajouter");
-        JButton afficherBtn = new JButton("Afficher");
-        buttonPanel.add(ajouterBtn);
-        buttonPanel.add(afficherBtn);
+        gbc.gridx = 0; gbc.gridy = 1;
+        formPanel.add(lblUtilisateur, gbc);
+        gbc.gridx = 1;
+        formPanel.add(utilisateurField, gbc);
 
+        gbc.gridx = 0; gbc.gridy = 2;
+        formPanel.add(lblClient, gbc);
+        gbc.gridx = 1;
+        formPanel.add(clientField, gbc);
+
+        gbc.gridx = 1; gbc.gridy = 3; gbc.anchor = GridBagConstraints.EAST;
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        actionPanel.add(btnAjouter);
+        actionPanel.add(btnAfficher);
         if ("Admin".equalsIgnoreCase(role)) {
-            JButton modifierBtn = new JButton("Modifier");
-            JButton supprimerBtn = new JButton("Supprimer");
-            buttonPanel.add(modifierBtn);
-            buttonPanel.add(supprimerBtn);
-
-            modifierBtn.addActionListener(this::modifierVente);
-        
+            actionPanel.add(btnModifier);
         }
+        formPanel.add(actionPanel, gbc);
 
-        centerPanel.add(buttonPanel, BorderLayout.SOUTH);
-        add(centerPanel, BorderLayout.CENTER);
-
-        // === Zone d'affichage des ventes
-        outputArea = new JTextArea(12, 40);
-        outputArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(outputArea);
+        tableModel = new DefaultTableModel(new String[]{"ID", "Date", "Utilisateur", "Client"}, 0);
+        table = new JTable(tableModel);
+        table.setFont(new Font("Bell Mt", Font.PLAIN, 14));
+        table.setRowHeight(25);
+        JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Liste des ventes"));
-        add(scrollPane, BorderLayout.EAST);
 
-        // === Actions des boutons
-        ajouterBtn.addActionListener(this::ajouterVente);
-        afficherBtn.addActionListener(this::afficherVentes);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, scrollPane);
+        splitPane.setResizeWeight(0.3);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setDividerLocation(300);
+
+        mainPanel.add(splitPane, BorderLayout.CENTER);
+
+        // ===== Bouton Retour (Ajouté uniquement ici) =====
+        JButton btnRetour = new JButton("← Retour");
+        btnRetour.setFont(new Font("Bell Mt", Font.BOLD, 16));
+        btnRetour.setBackground(new Color(33, 150, 243));
+        btnRetour.setForeground(Color.WHITE);
+        btnRetour.setFocusPainted(false);
+        btnRetour.addActionListener(e -> {
+            this.dispose();
+            new ConcernerView().setVisible(true);
+        });
+
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        bottomPanel.setBackground(new Color(240, 240, 240));
+        bottomPanel.add(btnRetour);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        // ================================================
+
+        add(mainPanel);
+
+        btnAjouter.addActionListener(this::ajouterVente);
+        btnAfficher.addActionListener(this::afficherVentes);
+        btnModifier.addActionListener(this::modifierVente);
 
         setVisible(true);
     }
 
-
     private void ajouterVente(ActionEvent e) {
         try {
-            // Vérifier que les champs ne sont pas vides
             String dateText = dateField.getText().trim();
             String utilisateurText = utilisateurField.getText().trim();
             String clientText = clientField.getText().trim();
 
-            if (dateText.isEmpty()) {
-                outputArea.setText("Erreur : le champ Date de vente est vide.");
-                return;
-            }
-            if (utilisateurText.isEmpty()) {
-                outputArea.setText("Erreur : le champ ID Utilisateur est vide.");
-                return;
-            }
-            if (clientText.isEmpty()) {
-                outputArea.setText("Erreur : le champ ID Client est vide.");
+            if (dateText.isEmpty() || utilisateurText.isEmpty() || clientText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tous les champs sont obligatoires.");
                 return;
             }
 
-            // Valider que les ID sont des entiers
-            if (!utilisateurText.matches("\\d+")) {
-                outputArea.setText("Erreur : l'ID Utilisateur doit être un nombre entier.");
-                return;
-            }
-            if (!clientText.matches("\\d+")) {
-                outputArea.setText("Erreur : l'ID Client doit être un nombre entier.");
+            if (!utilisateurText.matches("\\d+") || !clientText.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "Les ID doivent être des nombres entiers.");
                 return;
             }
 
-            // Convertir les valeurs
             Date dateVente = new SimpleDateFormat("dd/MM/yyyy").parse(dateText);
             int idUtilisateur = Integer.parseInt(utilisateurText);
             int idClient = Integer.parseInt(clientText);
 
-            // Créer et ajouter la vente
             Vente vente = new Vente(0, dateVente, idUtilisateur, idClient);
             String result = venteController.ajouterVente(role, vente);
-            outputArea.setText(result);
+            JOptionPane.showMessageDialog(this, result);
             afficherVentes(null);
-        } catch (ParseException pe) {
-            outputArea.setText("Erreur : la date doit être au format dd/MM/yyyy.");
-        } catch (NumberFormatException nfe) {
-            outputArea.setText("Erreur : les ID doivent être des entiers valides.");
+
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(this, "La date doit être au format dd/MM/yyyy.");
         } catch (Exception ex) {
-            outputArea.setText("Erreur : " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage());
         }
     }
 
     private void afficherVentes(ActionEvent e) {
         try {
+            tableModel.setRowCount(0);
             List<Vente> ventes = venteController.getToutesLesVentes(role);
-            if (ventes.isEmpty()) {
-                outputArea.setText("Aucune vente trouvée.");
-                return;
-            }
-
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            StringBuilder sb = new StringBuilder("=== Liste des ventes ===\n");
-            for (Vente vente : ventes) {
-                sb.append("ID: ").append(vente.getId_vente())
-                        .append(", Date: ").append(sdf.format(vente.getDate_vente()))
-                        .append(", Utilisateur ID: ").append(vente.getId_utilisateur())
-                        .append(", Client ID: ").append(vente.getId_client())
-                        .append("\n");
+            for (Vente v : ventes) {
+                tableModel.addRow(new Object[]{
+                        v.getId_vente(),
+                        sdf.format(v.getDate_vente()),
+                        v.getId_utilisateur(),
+                        v.getId_client()
+                });
             }
-            outputArea.setText(sb.toString());
         } catch (Exception ex) {
-            outputArea.setText("Erreur lors de l'affichage : " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erreur d'affichage : " + ex.getMessage());
         }
     }
 
     private void modifierVente(ActionEvent e) {
-        outputArea.setText("Fonctionnalité de modification non implémentée.");
+        JOptionPane.showMessageDialog(this, "Fonctionnalité de modification non implémentée.");
     }
-
-
-
-   
 }

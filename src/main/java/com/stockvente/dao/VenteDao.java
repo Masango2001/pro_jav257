@@ -91,4 +91,22 @@ public class VenteDao implements CrudDao<Vente> {
             throw new IllegalArgumentException("L'ID du client doit être un entier positif.");
         }
     }
+    
+    public int getNombreVentesJour() {
+        String query = "SELECT COUNT(*) FROM ventes WHERE DATE(date_vente) = CURDATE()";
+        try (Connection conn = DatabaseConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1); // retourne le nombre de ventes
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
 }

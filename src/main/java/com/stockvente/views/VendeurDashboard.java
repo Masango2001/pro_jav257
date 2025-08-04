@@ -1,7 +1,9 @@
 package com.stockvente.views;
 
+import com.stockvente.controller.ConcernerController;
 import com.stockvente.controller.StockController;
 import com.stockvente.controller.VendeurController;
+import com.stockvente.controller.VenteController;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -13,6 +15,13 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class VendeurDashboard extends JFrame {
     
+    private VenteController venteController;
+    private ConcernerController concernerController;
+
+    private JLabel lblVentes;
+    private JLabel lblTotal;
+    private JLabel lblTopProduit;
+
     // Palette de couleurs ultra-moderne
     private static final Color PRIMARY_GRADIENT_START = new Color(74, 144, 226);
     private static final Color PRIMARY_GRADIENT_END = new Color(106, 90, 205);
@@ -30,11 +39,51 @@ public class VendeurDashboard extends JFrame {
     private VendeurController vendeurController;
     
     public VendeurDashboard() {
+        venteController = new VenteController();
+        concernerController = new ConcernerController();
+        // === PANEL INFÉRIEUR AVEC STATISTIQUES ET BOUTON ACTUALISER ===
+      
+     
+
+        // ➤ Partie gauche : Statistiques
+        JPanel statsPanel = new JPanel();
+        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+        statsPanel.setBackground(Color.WHITE);
+        statsPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder("Statistiques"),
+            new EmptyBorder(10, 10, 10, 10)
+        ));
+        JLabel labelTotalVentes = new JLabel("Total des ventes : 0");
+        JLabel labelProduitsVendues = new JLabel("Produits vendus : 0");
+        labelTotalVentes.setFont(new Font("Arial", Font.PLAIN, 14));
+        labelProduitsVendues.setFont(new Font("Arial", Font.PLAIN, 14));
+        statsPanel.add(labelTotalVentes);
+        statsPanel.add(Box.createVerticalStrut(5)); // espacement
+        statsPanel.add(labelProduitsVendues);
+
+        // ➤ Partie droite : Bouton Actualiser
+        JPanel boutonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        boutonPanel.setBackground(new Color(240, 240, 240));
+        JButton boutonActualiser = new JButton("🔄 Actualiser");
+        boutonActualiser.setFocusPainted(false);
+        boutonActualiser.setBackground(new Color(70, 130, 180));
+        boutonActualiser.setForeground(Color.WHITE);
+        boutonActualiser.setFont(new Font("Arial", Font.BOLD, 13));
+        boutonActualiser.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Ajout listener si besoin
+        boutonActualiser.addActionListener(e -> {
+            // Tu pourras remplacer ces lignes par un appel à ton contrôleur
+            labelTotalVentes.setText("Total des ventes : ...");
+            labelProduitsVendues.setText("Produits vendus : ...");
+        });
+
+         setVisible(true);
         initializeFrame();
         createComponents();
         setVisible(false);
     }
-    
+ 
     private void initializeFrame() {
         setTitle(" Vendeur");
         setSize(1200, 800);
@@ -127,7 +176,84 @@ public class VendeurDashboard extends JFrame {
         
         headerPanel.add(contentContainer, BorderLayout.CENTER);
         add(headerPanel, BorderLayout.NORTH);
+        add(creerPanelStatistiques(), BorderLayout.AFTER_LAST_LINE); 
     }
+//    // Ajouter les statistiques juste en dessous de la barre bleue
+//    add(creerPanelStatistiques(), BorderLayout.AFTER_LAST_LINE); // ou BorderLayout.CENTER temporairement si conflit
+
+    
+    private JPanel creerPanelStatistiques() {
+        JPanel panelStats = new JPanel(new BorderLayout());
+        panelStats.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelStats.setBackground(new Color(230, 240, 255)); // bleu clair
+
+        // Panel contenant les 3 stats
+        JPanel infos = new JPanel(new GridLayout(1, 3, 10, 10));
+        infos.setOpaque(false);
+
+        lblVentes = new JLabel();
+        lblTotal = new JLabel();
+        lblTopProduit = new JLabel();
+
+        Font font = new Font("Segoe UI", Font.BOLD, 14);
+        lblVentes.setFont(font);
+        lblTotal.setFont(font);
+        lblTopProduit.setFont(font);
+
+        // Ajout d'un fond et d'une bordure pour chaque label pour améliorer la visibilité
+        lblVentes.setOpaque(true);
+        lblVentes.setBackground(Color.WHITE);
+        lblVentes.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(226, 232, 240), 1),
+            new EmptyBorder(10, 10, 10, 10)
+        ));
+        lblTotal.setOpaque(true);
+        lblTotal.setBackground(Color.WHITE);
+        lblTotal.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(226, 232, 240), 1),
+            new EmptyBorder(10, 10, 10, 10)
+        ));
+        lblTopProduit.setOpaque(true);
+        lblTopProduit.setBackground(Color.WHITE);
+        lblTopProduit.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(226, 232, 240), 1),
+            new EmptyBorder(10, 10, 10, 10)
+        ));
+
+        infos.add(lblVentes);
+        infos.add(lblTotal);
+        infos.add(lblTopProduit);
+
+        // Panel pour le bouton de rafraîchissement
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setOpaque(false);
+
+        JButton btnRafraichir = new JButton("↻ Actualiser");
+        btnRafraichir.setFocusPainted(false);
+        btnRafraichir.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnRafraichir.setBackground(new Color(100, 149, 237)); // bleu cornflower
+        btnRafraichir.setForeground(Color.WHITE);
+        btnRafraichir.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnRafraichir.setPreferredSize(new Dimension(120, 30));
+
+        // Action du bouton
+        btnRafraichir.addActionListener(e -> mettreAJourStatistiques());
+
+        buttonPanel.add(btnRafraichir);
+
+        // Ajout des panels au panel principal
+        panelStats.add(infos, BorderLayout.CENTER);
+        panelStats.add(buttonPanel, BorderLayout.SOUTH); // Bouton placé en bas
+
+        // Initialiser les statistiques
+        mettreAJourStatistiques();
+
+        return panelStats;
+    }
+  
+
+        
+
     
     private void createMainContent() {
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -203,14 +329,14 @@ public class VendeurDashboard extends JFrame {
         }
         
         // Section des statistiques rapides
-        JPanel statsSection = createQuickStatsSection();
-        
+//        JPanel statsSection = createQuickStatsSection();
+//        
         // Assemblage
         JPanel contentPanel = new JPanel(new BorderLayout(0, 35));
         contentPanel.setBackground(BACKGROUND_COLOR);
         contentPanel.add(sectionHeader, BorderLayout.NORTH);
         contentPanel.add(cardsPanel, BorderLayout.CENTER);
-        contentPanel.add(statsSection, BorderLayout.SOUTH);
+//        contentPanel.add(statsSection, BorderLayout.SOUTH);
         
         mainPanel.add(contentPanel, BorderLayout.CENTER);
         add(mainPanel, BorderLayout.CENTER);
@@ -377,29 +503,6 @@ public class VendeurDashboard extends JFrame {
         return card;
     }
     
-    private JPanel createQuickStatsSection() {
-        JPanel section = new JPanel(new BorderLayout());
-        section.setBackground(BACKGROUND_COLOR);
-        
-        JLabel sectionTitle = new JLabel("📊 Aperçu Rapide de Votre Performance");
-        sectionTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        sectionTitle.setForeground(TEXT_PRIMARY);
-        sectionTitle.setBorder(new EmptyBorder(0, 0, 20, 0));
-        
-        JPanel statsPanel = new JPanel(new GridLayout(1, 4, 20, 0));
-        statsPanel.setBackground(BACKGROUND_COLOR);
-        
-        // Statistiques avec descriptions explicatives
-        statsPanel.add(createStatCard("🎯", "Ventes Aujourd'hui", "12 transactions", "Nombre de ventes réalisées", SUCCESS_COLOR));
-        statsPanel.add(createStatCard("👥", "Clients Actifs", "48 clients", "Base clients fidèles", ACCENT_BLUE));
-        statsPanel.add(createStatCard("💼", "Commissions", "2,450€", "Vos gains ce mois", ACCENT_PURPLE));
-        statsPanel.add(createStatCard("⭐", "Satisfaction", "4.8/5", "Note moyenne clients", ACCENT_ORANGE));
-        
-        section.add(sectionTitle, BorderLayout.NORTH);
-        section.add(statsPanel, BorderLayout.CENTER);
-        
-        return section;
-    }
     
     private JPanel createStatCard(String icon, String label, String value, String description, Color color) {
         JPanel card = new JPanel();
@@ -541,6 +644,7 @@ public class VendeurDashboard extends JFrame {
         
         return button;
     }
+    
     
     // Méthodes d'action avec descriptions détaillées
     private void openClientView() {
@@ -863,7 +967,7 @@ public class VendeurDashboard extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
             dispose();
             // Redirection vers LoginView si disponible
-            // SwingUtilities.invokeLater(() -> new LoginView().setVisible(true));
+             new LoginView().setVisible(true);
         }
     }
     
@@ -961,5 +1065,14 @@ public class VendeurDashboard extends JFrame {
     public VendeurDashboard(VendeurController vendeurController) {
         this();
         this.vendeurController = vendeurController;
+    }
+    private void mettreAJourStatistiques() {
+        int nombreVentes = venteController.getNombreVentesDuJour();
+        double totalVentes = concernerController.getTotalVentesDuJour();
+        String produitPlusVendu = concernerController.getProduitLePlusVenduDuJour();
+
+        lblVentes.setText("🛒 Ventes aujourd'hui : " + nombreVentes);
+        lblTotal.setText("💰 Total ventes : " + totalVentes + " F");
+        lblTopProduit.setText("📦 Meilleur produit : " + produitPlusVendu);
     }
 }

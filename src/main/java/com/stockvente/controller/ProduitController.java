@@ -12,6 +12,11 @@ public class ProduitController {
     public ProduitController() {
         this.produitDao = new ProduitDao();
     }
+    
+    public List<Produit> getProduits() {
+        return produitDao.afficherTous();
+    }
+
 
     public String afficherTousLesProduits(String role) {
         if (!role.equals("Vendeur") && !role.equals("Magasinier") && !role.equals("Admin")) {
@@ -28,6 +33,8 @@ public class ProduitController {
             result.append("ID: ").append(produit.getId_produit())
                   .append(", Nom: ").append(produit.getNom_produit())
                   .append(", Catégorie ID: ").append(produit.getId_categorie())
+                  .append(",nom Categorie :").append(produit.getNom_categorie())
+                  .append(",quantite stock :").append(produit.getQuantite_stock())
                   .append("\n");
         }
         return result.toString();
@@ -106,4 +113,6 @@ public class ProduitController {
 //    String ajouterProduit(String admin, String nom_produit, int id_categorie) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //    }
+
+    
 }

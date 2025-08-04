@@ -41,7 +41,7 @@ public class StatisticsDao {
 
     // Produits en alerte (ex: quantité <= 5)
     public int getProduitsEnAlerte() {
-        String sql = "SELECT COUNT(*) FROM stock WHERE quantite_stock <= 5";
+        String sql = "SELECT COUNT(*) FROM stocks WHERE quantite_stock <= 5";
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;

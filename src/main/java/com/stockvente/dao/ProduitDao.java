@@ -12,19 +12,37 @@ public class ProduitDao implements CrudDao<Produit> {
 
     @Override
     public void save(Produit produit) {
-        
-        validerCategorie(produit.getId_categorie());
+        String insertProduit = "INSERT INTO produits (nom_produit, id_categorie) VALUES (?, ?)";
+        String insertStock = "INSERT INTO stocks (id_produit, quantite_stock) VALUES (?, ?)";
 
-        String query = "INSERT INTO produits (nom_produit, id_categorie) VALUES (?, ?)";
         try (Connection conn = DatabaseConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, produit.getNom_produit());
-            stmt.setInt(2, produit.getId_categorie());
-            stmt.executeUpdate();
+             PreparedStatement stmtProduit = conn.prepareStatement(insertProduit, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Étape 1 : insertion dans la table produits
+            stmtProduit.setString(1, produit.getNom_produit());
+            stmtProduit.setInt(2, produit.getId_categorie());
+            stmtProduit.executeUpdate();
+
+            // Étape 2 : récupérer l'ID du produit nouvellement inséré
+            ResultSet generatedKeys = stmtProduit.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int idProduit = generatedKeys.getInt(1);
+
+                // Étape 3 : insertion dans la table stocks avec l'ID du produit
+                try (PreparedStatement stmtStock = conn.prepareStatement(insertStock)) {
+                    stmtStock.setInt(1, idProduit);
+                    stmtStock.setInt(2, produit.getQuantite_stock());
+                    stmtStock.executeUpdate();
+                }
+            } else {
+                throw new SQLException("Échec de la récupération de l'ID du produit.");
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de l'ajout du produit : " + e.getMessage(), e);
+            throw new RuntimeException("Erreur lors de l'ajout du produit et du stock : " + e.getMessage(), e);
         }
     }
+
 
     @Override
     public void update(Produit produit) {

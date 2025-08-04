@@ -17,6 +17,9 @@ public class StockController {
         this.stockDao = new StockDao();
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
+    public List<Stock> getStocksList() {
+        return stockDao.afficherTous();  // Assure-toi que cette méthode existe dans StockDao
+    }
 
     public String afficherTousLesStocks(String role) {
         if (!role.equals("Vendeur") && !role.equals("Magasinier") && !role.equals("Admin")) {
