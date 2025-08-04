@@ -38,6 +38,10 @@ public class VendeurDashboard extends JFrame {
     
     private VendeurController vendeurController;
     
+    // Panel principal avec scroll - AJOUT PRINCIPAL
+    private JPanel mainContentPanel;
+    private JScrollPane mainScrollPane;
+    
     public VendeurDashboard() {
         venteController = new VenteController();
         concernerController = new ConcernerController();
@@ -102,6 +106,95 @@ public class VendeurDashboard extends JFrame {
         } catch (Exception e) {
             // Icône par défaut si pas trouvée
         }
+        
+        // CRÉATION DU SYSTÈME DE SCROLL PRINCIPAL
+        setupScrollableContent();
+    }
+    
+    // NOUVELLE MÉTHODE : Configuration du contenu défilable
+    private void setupScrollableContent() {
+        // Création du panel principal qui contiendra tout le contenu
+        mainContentPanel = new JPanel(new BorderLayout());
+        mainContentPanel.setBackground(BACKGROUND_COLOR);
+        
+        // Configuration du JScrollPane
+        mainScrollPane = new JScrollPane(mainContentPanel);
+        mainScrollPane.setBackground(BACKGROUND_COLOR);
+        mainScrollPane.getViewport().setBackground(BACKGROUND_COLOR);
+        
+        // Configuration des barres de défilement
+        mainScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        mainScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        
+        // Amélioration de la vitesse de défilement
+        mainScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        mainScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+        
+        // Style moderne pour les barres de défilement
+        customizeScrollBars();
+        
+        // Ajouter le JScrollPane au JFrame principal
+        add(mainScrollPane, BorderLayout.CENTER);
+    }
+    
+    // NOUVELLE MÉTHODE : Personnalisation des barres de défilement
+    private void customizeScrollBars() {
+        // Personnalisation de la barre verticale
+        JScrollBar verticalBar = mainScrollPane.getVerticalScrollBar();
+        verticalBar.setBackground(new Color(248, 250, 252));
+        verticalBar.setUI(new ModernScrollBarUI());
+        
+        // Personnalisation de la barre horizontale
+        JScrollBar horizontalBar = mainScrollPane.getHorizontalScrollBar();
+        horizontalBar.setBackground(new Color(248, 250, 252));
+        horizontalBar.setUI(new ModernScrollBarUI());
+    }
+    
+    // CLASSE INTERNE : Style moderne pour les barres de défilement
+    private class ModernScrollBarUI extends javax.swing.plaf.basic.BasicScrollBarUI {
+        @Override
+        protected void configureScrollBarColors() {
+            this.thumbColor = new Color(156, 163, 175, 150);
+            this.thumbDarkShadowColor = new Color(156, 163, 175, 200);
+            this.thumbHighlightColor = new Color(156, 163, 175, 100);
+            this.trackColor = new Color(248, 250, 252);
+        }
+        
+        @Override
+        protected JButton createDecreaseButton(int orientation) {
+            return createInvisibleButton();
+        }
+        
+        @Override
+        protected JButton createIncreaseButton(int orientation) {
+            return createInvisibleButton();
+        }
+        
+        private JButton createInvisibleButton() {
+            JButton button = new JButton();
+            button.setPreferredSize(new Dimension(0, 0));
+            button.setMinimumSize(new Dimension(0, 0));
+            button.setMaximumSize(new Dimension(0, 0));
+            return button;
+        }
+        
+        @Override
+        protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setPaint(thumbColor);
+            g2.fillRoundRect(thumbBounds.x + 2, thumbBounds.y + 2, 
+                           thumbBounds.width - 4, thumbBounds.height - 4, 8, 8);
+            g2.dispose();
+        }
+        
+        @Override
+        protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(trackColor);
+            g2.fillRect(trackBounds.x, trackBounds.y, trackBounds.width, trackBounds.height);
+            g2.dispose();
+        }
     }
     
     private void createComponents() {
@@ -149,7 +242,7 @@ public class VendeurDashboard extends JFrame {
         titre.setFont(new Font("Segoe UI", Font.BOLD, 32));
         titre.setForeground(Color.WHITE);
         
-        JLabel sousTitre = new JLabel("Gestion des ventes et relation client - Bienvenue dans votre espace de travail");
+        JLabel sousTitre = new JLabel("Gestion des operations ventaires");
         sousTitre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         sousTitre.setForeground(new Color(255, 255, 255, 200));
         
@@ -175,12 +268,15 @@ public class VendeurDashboard extends JFrame {
         contentContainer.add(statusPanel, BorderLayout.EAST);
         
         headerPanel.add(contentContainer, BorderLayout.CENTER);
-        add(headerPanel, BorderLayout.NORTH);
-        add(creerPanelStatistiques(), BorderLayout.AFTER_LAST_LINE); 
+        
+        // MODIFICATION : Ajouter le header au panel principal défilable au lieu du JFrame
+        mainContentPanel.add(headerPanel, BorderLayout.NORTH);
+        
+        // Ajouter les statistiques
+        JPanel statsWithHeader = new JPanel(new BorderLayout());
+        statsWithHeader.add(creerPanelStatistiques(), BorderLayout.CENTER);
+        mainContentPanel.add(statsWithHeader, BorderLayout.AFTER_LAST_LINE);
     }
-//    // Ajouter les statistiques juste en dessous de la barre bleue
-//    add(creerPanelStatistiques(), BorderLayout.AFTER_LAST_LINE); // ou BorderLayout.CENTER temporairement si conflit
-
     
     private JPanel creerPanelStatistiques() {
         JPanel panelStats = new JPanel(new BorderLayout());
@@ -285,7 +381,7 @@ public class VendeurDashboard extends JFrame {
             {
                 "👥", 
                 "Gérer les Clients", 
-                "• Ajouter de nouveaux clients\n• Modifier informations existantes\n• Consulter historique d'achats\n• Gérer coordonnées de contact", 
+                "• Ajouter de nouveaux clients\n• Modifier clients existantes\n• afficher les clients\n• Gérer coordonnées de contact", 
                 "Accédez à la base de données complète de vos clients",
                 ACCENT_BLUE, 
                 (Runnable) this::openClientView
@@ -293,8 +389,8 @@ public class VendeurDashboard extends JFrame {
             {
                 "💰", 
                 "Gérer les Ventes", 
-                "• Créer nouvelles factures\n• Enregistrer transactions\n• Calculer totaux automatiquement\n• Imprimer tickets de caisse", 
-                "Module complet de gestion des transactions",
+                "• Créer nouvelles ventes\n• Enregistrer transactions\n• Calculer totaux automatiquement\n• voir les operations ventes", 
+                "Module complet de gestion des ventes",
                 ACCENT_GREEN, 
                 (Runnable) this::openVenteView
             },
@@ -309,7 +405,7 @@ public class VendeurDashboard extends JFrame {
             {
                 "📋", 
                 "Lignes de Vente", 
-                "• Détails de chaque transaction\n• Historique des ventes par client\n• Rapports de performances\n• Suivi des commissions", 
+                "• Détails de chaque transaction\n• Historique des ventes par client\n• Rapports de performances\n• Suivi l'evolution",
                 "Analyse détaillée de votre activité commerciale",
                 ACCENT_ORANGE, 
                 (Runnable) this::openConcernerView
@@ -328,18 +424,16 @@ public class VendeurDashboard extends JFrame {
             cardsPanel.add(cardPanel);
         }
         
-        // Section des statistiques rapides
-//        JPanel statsSection = createQuickStatsSection();
-//        
         // Assemblage
         JPanel contentPanel = new JPanel(new BorderLayout(0, 35));
         contentPanel.setBackground(BACKGROUND_COLOR);
         contentPanel.add(sectionHeader, BorderLayout.NORTH);
         contentPanel.add(cardsPanel, BorderLayout.CENTER);
-//        contentPanel.add(statsSection, BorderLayout.SOUTH);
         
         mainPanel.add(contentPanel, BorderLayout.CENTER);
-        add(mainPanel, BorderLayout.CENTER);
+        
+        // MODIFICATION : Ajouter au panel principal défilable au lieu du JFrame
+        mainContentPanel.add(mainPanel, BorderLayout.CENTER);
     }
     
     private JPanel createDetailedCard(String icon, String title, String features, String description, Color accentColor, Runnable action) {
@@ -502,7 +596,6 @@ public class VendeurDashboard extends JFrame {
         
         return card;
     }
-    
     
     private JPanel createStatCard(String icon, String label, String value, String description, Color color) {
         JPanel card = new JPanel();
@@ -716,24 +809,7 @@ public class VendeurDashboard extends JFrame {
                 • Sélection rapide des produits
                 • Ajout automatique des prix
                 • Calcul en temps réel du total
-                
-                ✅ GESTION DES FACTURES
-                • Génération automatique des numéros
-                • Personnalisation des en-têtes
-                • Ajout de remises et promotions
-                • Gestion de la TVA et taxes
-                
-                ✅ MODES DE PAIEMENT
-                • Espèces, carte bancaire, chèque
-                • Paiement en plusieurs fois
-                • Acomptes et soldes
-                • Gestion de la monnaie rendue
-                
-                ✅ IMPRESSION ET ÉDITION
-                • Tickets de caisse personnalisés
-                • Factures détaillées client
-                • Bons de livraison
-                • Duplicatas et copies
+
                 
                 ✅ SUIVI DES TRANSACTIONS
                 • Historique complet des ventes
@@ -851,11 +927,7 @@ public class VendeurDashboard extends JFrame {
                 • Panier moyen par client
                 • Évolution de vos performances
                 
-                ✅ CALCUL DES COMMISSIONS
-                • Pourcentage par catégorie de produit
-                • Commissions variables selon objectifs
-                • Bonus sur les nouveaux clients
-                • Récapitulatif mensuel automatique
+                
                 
                 ✅ ANALYSE CLIENT
                 • Achats par client régulier
@@ -881,11 +953,6 @@ public class VendeurDashboard extends JFrame {
                 • Développer les produits à forte marge
                 • Améliorer votre technique de vente
                 
-                📊 INDICATEURS CLÉS :
-                • Taux de transformation des prospects
-                • Valeur moyenne des commandes
-                • Taux de fidélisation client
-                • Rentabilité par heure travaillée
                 """;
         
         showDetailedModuleInfo(ligneVenteInfo, "📋 Lignes de Vente", () -> {
@@ -992,13 +1059,11 @@ public class VendeurDashboard extends JFrame {
             • Ajouter de nouveaux clients avec leurs informations complètes
             • Modifier les données existantes (adresse, téléphone, etc.)
             • Consulter l'historique complet des achats par client
-            • Gérer les coordonnées de contact et préférences
             
             💰 GESTION DES VENTES
             • Créer des factures personnalisées pour chaque client
             • Enregistrer toutes les transactions en temps réel  
             • Calculs automatiques des totaux, taxes et remises
-            • Imprimer les tickets de caisse et factures détaillées
             
             📦 CONSULTATION DU STOCK
             • Vérifier la disponibilité immédiate de tous les produits

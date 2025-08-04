@@ -25,6 +25,7 @@ com\stockvente\controller\UserManagementController.class
 com\stockvente\views\HistoriqueApprovisionnementView.class
 com\stockvente\service\UserService.class
 com\stockvente\controller\CategorieController.class
+com\stockvente\views\VendeurDashboard$ModernScrollBarUI.class
 com\stockvente\views\ConcernerView.class
 com\stockvente\models\Fournisseur.class
 com\stockvente\controller\AbstractStringBuilder.class

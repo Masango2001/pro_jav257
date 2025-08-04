@@ -313,18 +313,17 @@ public class AdminDashboard extends JFrame {
         sectionTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         sectionTitle.setForeground(TEXT_PRIMARY);
 
-        // Grille des statistiques
+        // Grille des statistiques - Modifiée pour 5 éléments au lieu de 6
         JPanel statsGrid = new JPanel(new GridLayout(2, 3, 15, 15));
         statsGrid.setBackground(BACKGROUND_COLOR);
 
-        // Données des statistiques
+        // Données des statistiques - LIGNE MAGASINIER SUPPRIMÉE
         Object[][] statsData = {
             {"👥", "Total utilisateurs", String.valueOf(statisticsController.getTotalUtilisateurs())},
             {"📦", "Total produits", String.valueOf(statisticsController.getTotalProduits())},
             {"📊", "Quantité en stock", String.valueOf(statisticsController.getQuantiteTotaleEnStock())},
             {"💰", "Total ventes", String.valueOf(statisticsController.getNombreTotalVentes())},
-            {"🏆", "Vendeur le plus actif", statisticsController.getNomVendeurLePlusActif()},
-            {"🔧", "Magasinier le plus actif", statisticsController.getMagasinierLePlusActif()}
+            {"🏆", "Vendeur le plus actif", statisticsController.getNomVendeurLePlusActif()}
         };
 
         for (Object[] stat : statsData) {
@@ -577,8 +576,6 @@ public class AdminDashboard extends JFrame {
             💰 Gérer les Ventes : Suivi des transactions
             📋 Gérer les Lignes de Vente : Détails des ventes
             👑 Ajouter Administrateur : Créer des comptes admin
-            👤 Ajouter Employé : Créer des comptes employés
-            
             📊 Section Statistiques : Vue d'ensemble du système
             
             Pour plus d'aide, consultez la documentation système.
