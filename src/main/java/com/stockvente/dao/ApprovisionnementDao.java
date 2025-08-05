@@ -104,7 +104,7 @@ public class ApprovisionnementDao implements CrudDao<Approvisionnement> {
     public List<String> getHistoriqueApprovisionnements() {
         List<String> historique = new ArrayList<>();
         String query = """
-            SELECT a.date_approvisionnement, p.nom_produit, f.nom_fournisseur, a.quantite_approvisionnement, a.prix_unitaire_achat
+            SELECT a.date_approvisionnement, p.nom_produit, f.nom_complet_fournisseur, a.quantite_approvisionnement, a.prix_unitaire_achat
             FROM approvisionnements a
             JOIN produits p ON a.id_produit = p.id_produit
             JOIN fournisseurs f ON a.id_fournisseur = f.id_fournisseur
@@ -117,12 +117,12 @@ public class ApprovisionnementDao implements CrudDao<Approvisionnement> {
 
             while (rs.next()) {
                 String ligne = String.format(
-                    "Le %s : %s approvisionné de %d unités à %.2f FCFA par %s",
+                    "Le %s : %s approvisionné de %d unités à %.2f FBU par %s",
                     rs.getDate("date_approvisionnement").toString(),
                     rs.getString("nom_produit"),
                     rs.getInt("quantite_approvisionnement"),
                     rs.getDouble("prix_unitaire_achat"),
-                    rs.getString("nom_fournisseur")
+                    rs.getString("nom_complet_fournisseur")
                 );
                 historique.add(ligne);
             }

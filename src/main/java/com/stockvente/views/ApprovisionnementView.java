@@ -163,9 +163,9 @@ public class ApprovisionnementView extends JFrame {
         btnModifier.addActionListener(e -> remplirFormulaireDepuisTable());
         btnSupprimer.addActionListener(e -> supprimerApprovisionnement());
         btnActualiser.addActionListener(e -> chargerApprovisionnements());
-//        btnHistorique.addActionListener(e -> {
-//            new HistoriqueApprovisionnementView().setVisible(true);
-//        });
+        btnHistorique.addActionListener(e -> {
+            new HistoriqueApprovisionnementView().setVisible(true);
+        });
 
 
         chargerApprovisionnements();

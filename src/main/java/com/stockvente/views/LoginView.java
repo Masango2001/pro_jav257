@@ -10,7 +10,6 @@ import java.awt.*;
 
 public class LoginView extends JFrame {
     private final LoginController loginController;
-
     private Utilisateur utilisateur;
 
     public LoginView() {
@@ -75,26 +74,13 @@ public class LoginView extends JFrame {
         gbc.gridy = 1;
         formPanel.add(passwordField, gbc);
 
-        JLabel roleLabel = new JLabel("Rôle :");
-        roleLabel.setFont(new Font("Bell Mt", Font.PLAIN, 18));
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        formPanel.add(roleLabel, gbc);
-
-        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"Admin", "Vendeur", "Magasinier"});
-        roleComboBox.setFont(new Font("Bell Mt", Font.PLAIN, 18));
-        roleComboBox.setPreferredSize(new Dimension(300, 40));
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        formPanel.add(roleComboBox, gbc);
-
         JButton loginButton = new JButton("Se connecter");
         loginButton.setFont(new Font("Bell Mt", Font.BOLD, 16));
         loginButton.setBackground(new Color(33, 150, 243));
         loginButton.setForeground(Color.WHITE);
         loginButton.setPreferredSize(new Dimension(150, 40));
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.EAST;
         formPanel.add(loginButton, gbc);
@@ -106,9 +92,9 @@ public class LoginView extends JFrame {
                         userField.getText(),
                         new String(passwordField.getPassword())
                 );
-                this.utilisateur = user;  // <-- IMPORTANT: stocker utilisateur pour la méthode afficherEtObtenirUtilisateur()
+                this.utilisateur = user;  // Stocker l'utilisateur connecté
 
-                // Redirection vers le dashboard approprié
+                // Redirection selon le rôle
                 switch (user.getRole().toLowerCase()) {
                     case "admin":
                         AdminController adminController = new AdminController();
@@ -144,11 +130,9 @@ public class LoginView extends JFrame {
         setVisible(true);
     }
 
-   
     public Utilisateur afficherEtObtenirUtilisateur() {
         this.setVisible(true);
 
-        // Attente simple (bloquante) jusqu'à ce que l'utilisateur soit connecté.
         while (utilisateur == null) {
             try {
                 Thread.sleep(200);
@@ -159,8 +143,4 @@ public class LoginView extends JFrame {
 
         return utilisateur;
     }
-
-   
-
-    
 }
