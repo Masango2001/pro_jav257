@@ -6,9 +6,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnect {
-    private static final String URL = "jdbc:mysql://localhost:3306/stocketvente";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String URL = "jdbc:mysql://192.168.0.78/stocketvente";
+    private static final String USER = "masango";
+    private static final String PASSWORD = "masango2001";
     private static Connection connection = null;
 
     private DatabaseConnect() {}
