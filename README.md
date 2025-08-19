@@ -24,6 +24,8 @@ L’objectif principal est de faciliter le travail des vendeurs et de l’admini
 ## Lieu sur Youtube
 - https://youtu.be/EDsEL_-Ul5E?si=mBnCI2jU6iiW9-OH
 
+- https://youtu.be/PNDYcJozKIo?si=qysO6dYcQdxQXDdb
+
 ## 🚀 Fonctionnalités
 
 ### 🔐 Authentification
